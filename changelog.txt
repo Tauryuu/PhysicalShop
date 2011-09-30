@@ -1,0 +1,25 @@
+(9/26/11) - v8.1.0 - feature build
+- added bukkit permissions
+- added reload config command (admin permission node)
+- added config node for existing chest protection
+- added language nodes for reloading config (requires deletion of language yml for update from jar)
+(9/22/11) - v8.0.3 - BukkitRB build
+- Removed an unused private function in com.wolvereness.physicalshop.Shop
+(9/18/11) - v8.0.2 - translation build
+- Added Polish translation, special thanks to keicaM
+(9/14/11) - v8.0.1 - minor build
+- Deprecated com.wolvereness.physicalshop.config.Config.Config()
+- Added changelog.txt to jar
+(9/11/11) - v8.0.0 - Submitted / Re-Release
+- Licensed under Creative Commons BY-NC-SA  (previous work had no associated license)
+- Removed config option for rate-pattern, replaced with buy-pattern and sell-pattern
+- Large changes to sections of the API
+- Added new features
+- - (optional) logblock hook
+- - lwc hook
+- - localization
+- - automatic config file generation
+- - multiple currencies (thus changing previous configuration for currency)
+- Fixed bugs
+- - 0 amount transactions disfunctional
+- - null pointer exception when attemption to perform an action on shop that does not support such (liking selling to a buy-only sign), and will instead give the user a friendly message.

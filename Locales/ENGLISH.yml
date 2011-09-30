@@ -1,0 +1,25 @@
+NOT_ENOUGH_PLAYER_ITEMS: You don't have enough %1$s
+SELL: You sold %1$d %2$s for %3$d %4$s
+SELL_RATE: You can sell %1$d %2$s for %3$d %4$s
+CANT_PLACE_CHEST: You are not allowed to place this chest
+DEPOSIT: You deposited %1$d %2$s and %3$d %4$s
+WITHDRAW: You withdrew %1$d %2$s and %3$d %4$s
+STATUS: The shop contains %1$d %2$s, %3$d %4$s, and %5$d %6$s
+CANT_USE_CHEST: You are not allowed to use this shop chest
+CANT_BUILD: You are not allowed to build shops
+NO_SELL: You can't sell at this shop
+NOT_ENOUGH_PLAYER_MONEY: You don't have enough %1$s
+CANT_BUILD_SERVER: You are not allowed to build server shops
+EXISTING_CHEST: You can't build a shop over an existing chest
+NOT_ENOUGH_SHOP_MONEY: The shop doesn't have enough %1$s
+BUY: You bought %1$d %2$s for %3$d %4$s
+CANT_DESTROY: You are not allowed to destroy this shop
+NOT_ENOUGH_SHOP_ITEMS: The shop doesn't have enough %1$s
+NO_BUY: You can't buy at this shop
+PLAYER_INVENTORY_FULL: Your inventory is full
+STATUS_ONE_CURRENCY: The shop contains %1$d %2$s and %3$d %4$s
+CHEST_INVENTORY_FULL: The shop is full
+CANT_USE: You are not allowed to use shops
+BUY_RATE: You can buy %1$d %2$s for %3$d %4$s
+CANT_RELOAD_CONFIG: You are not allowed to reload the configuration
+CONFIG_RELOADED: The configuration has been reloaded

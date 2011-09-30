@@ -1,0 +1,25 @@
+NOT_ENOUGH_PLAYER_ITEMS: Nie posiadasz wystarczajacej ilosci %1$s
+SELL: Sprzedales %1$d %2$s za %3$d %4$s
+SELL_RATE: Mozesz sprzedac %1$d %2$s za %3$d %4$s
+CANT_PLACE_CHEST: Nie masz pozwolenia na umieszczenie tej skrzyni
+DEPOSIT: Zdeponowales %1$d %2$s i %3$d %4$s
+WITHDRAW: Wyjales %1$d %2$s i %3$d %4$s
+STATUS: Twoj sklep posiada %1$d %2$s, %3$d %4$s, oraz %5$d %6$s
+CANT_USE_CHEST: Nie mozesz korzystac z tej skrzyni sklepu
+CANT_BUILD: Nie mozesz budowac sklepow
+NO_SELL: Nie mozesz sprzedawac w tym sklepie
+NOT_ENOUGH_PLAYER_MONEY: Nie posiadasz wystarczajacej ilosci %1$s
+CANT_BUILD_SERVER: Nie mozesz budowac sklepow serwerowych
+EXISTING_CHEST: Nie mozesz budowac sklepow na istniejacych skrzyniach
+NOT_ENOUGH_SHOP_MONEY: Ten sklep nie posiada wystarczajacej ilosci %1$s
+BUY: Kupiles %1$d %2$s za %3$d %4$s
+CANT_DESTROY: Nie mozesz usunac tego sklepu
+NOT_ENOUGH_SHOP_ITEMS: Ten sklep nie posiada wystarczajacej ilosci %1$s
+NO_BUY: Nie mozesz kupowac w tym sklepie
+PLAYER_INVENTORY_FULL: Nie masz wolnego miejsca w inwentarzu
+STATUS_ONE_CURRENCY: Sklep zawiera %1$d %2$s i %3$d %4$s
+CHEST_INVENTORY_FULL: Sklep jest pelny
+CANT_USE: Nie masz pozwolenia na uzywanie sklepow
+BUY_RATE: Mozesz kupic %1$d %2$s za %3$d %4$s
+CANT_RELOAD_CONFIG: Nie masz pozwolenia na odswiezyc konfiguracja
+CONFIG_RELOADED: Konfiguracja zostala odswiezona

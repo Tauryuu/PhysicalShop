@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
@@ -16,17 +17,25 @@ public class PhysicalShopBlockListener extends BlockListener {
 
 	@Override
 	public void onBlockBreak(final BlockBreakEvent e) {
-		if (e.isCancelled()) {
+		if (e.isCancelled() || ! PhysicalShop.getConfig().isProtectBreak()) {
+			return;
+		}
+
+		if (!ShopHelpers.isBlockDestroyable(e.getBlock(), e.getPlayer())) {
+			//PhysicalShop.sendMessage(e.getPlayer(),"CANT_DESTROY");
+			e.setCancelled(true);
+		}
+	}
+
+	@Override
+	public void onBlockBurn(final BlockBurnEvent e) {
+		if (e.isCancelled() || ! PhysicalShop.getConfig().isProtectBreak()) {
 			return;
 		}
 
 		// Messaging.save(e.getPlayer());
 
-		if (!PhysicalShop.getConfig().isProtectBreak()) {
-			return;
-		}
-
-		if (!ShopHelpers.isBlockDestroyable(e.getBlock(), e.getPlayer())) {
+		if (!ShopHelpers.isBlockDestroyable(e.getBlock(), null)) {
 			e.setCancelled(true);
 		}
 	}

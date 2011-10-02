@@ -54,6 +54,7 @@ public class PhysicalShop extends JavaPlugin {
 			final PluginManager pm = getServer().getPluginManager();
 			pm.registerEvent(Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
 			pm.registerEvent(Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
+			pm.registerEvent(Type.BLOCK_BURN, blockListener, Priority.Normal, this);
 			pm.registerEvent(Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this);
 			pm.registerEvent(Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
 			pm.registerEvent(Type.SIGN_CHANGE, blockListener, Priority.Normal, this);

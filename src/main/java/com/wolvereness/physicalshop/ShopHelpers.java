@@ -66,11 +66,16 @@ public class ShopHelpers {
 
 		return shops;
 	}
-
+	/**
+	 * Checks around block for shops, and checks it against player for ownership
+	 * @param block The block being destroyed
+	 * @param player The player destroying block, can be null (as in, no destroyer)
+	 * @return false if there are shops and player is null or not admin and not owner
+	 */
 	public static boolean isBlockDestroyable(final Block block,
 			final Player player) {
 		final List<Shop> shops = ShopHelpers.getShops(block);
-
+		if(player == null && !shops.isEmpty()) return false;
 		for (final Shop shop : shops) {
 			if (!shop.isOwner(player)) {
 				PhysicalShop.sendMessage(player, "CANT_DESTROY");

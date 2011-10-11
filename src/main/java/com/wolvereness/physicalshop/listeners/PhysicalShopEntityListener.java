@@ -17,7 +17,7 @@ public class PhysicalShopEntityListener extends EntityListener {
 
 		// Messaging.save(null);
 
-		if (!PhysicalShop.getConfig().isProtectExplode()) {
+		if (!PhysicalShop.getPluginConfig().isProtectExplode()) {
 			return;
 		}
 

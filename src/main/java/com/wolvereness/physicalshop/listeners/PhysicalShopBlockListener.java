@@ -17,7 +17,7 @@ public class PhysicalShopBlockListener extends BlockListener {
 
 	@Override
 	public void onBlockBreak(final BlockBreakEvent e) {
-		if (e.isCancelled() || ! PhysicalShop.getConfig().isProtectBreak()) {
+		if (e.isCancelled() || ! PhysicalShop.getPluginConfig().isProtectBreak()) {
 			return;
 		}
 
@@ -29,7 +29,7 @@ public class PhysicalShopBlockListener extends BlockListener {
 
 	@Override
 	public void onBlockBurn(final BlockBurnEvent e) {
-		if (e.isCancelled() || ! PhysicalShop.getConfig().isProtectBreak()) {
+		if (e.isCancelled() || ! PhysicalShop.getPluginConfig().isProtectBreak()) {
 			return;
 		}
 
@@ -46,7 +46,7 @@ public class PhysicalShopBlockListener extends BlockListener {
 			return;
 		}
 
-		if (!PhysicalShop.getConfig().isProtectChestAccess()) {
+		if (!PhysicalShop.getPluginConfig().isProtectChestAccess()) {
 			return;
 		}
 
@@ -104,7 +104,7 @@ public class PhysicalShopBlockListener extends BlockListener {
 
 		final String ownerName = Shop.getOwnerName(lines);
 
-		if (ownerName.equalsIgnoreCase(PhysicalShop.getConfig().getServerOwner())) {
+		if (ownerName.equalsIgnoreCase(PhysicalShop.getPluginConfig().getServerOwner())) {
 			if (!PhysicalShop.getPermissions().hasAdmin(e.getPlayer())) {
 				PhysicalShop.sendMessage(e.getPlayer(), "CANT_BUILD_SERVER");
 				e.setCancelled(true);
@@ -112,7 +112,7 @@ public class PhysicalShopBlockListener extends BlockListener {
 			}
 		} else {
 			if (e.getBlock().getRelative(BlockFace.DOWN).getType() == Material.CHEST
-					&& PhysicalShop.getConfig().isExistingChestProtected()
+					&& PhysicalShop.getPluginConfig().isExistingChestProtected()
 					&& !PhysicalShop.getPermissions().hasAdmin(e.getPlayer())
 					&& !PhysicalShop.lwcCheck(e.getBlock().getRelative(BlockFace.DOWN), e.getPlayer())
 					&& !PhysicalShop.locketteCheck(e.getBlock().getRelative(BlockFace.DOWN), e.getPlayer())) {
@@ -121,7 +121,7 @@ public class PhysicalShopBlockListener extends BlockListener {
 				return;
 			}
 
-			if (PhysicalShop.getConfig().isAutoFillName()) {
+			if (PhysicalShop.getPluginConfig().isAutoFillName()) {
 				e.setLine(3, e.getPlayer().getName());
 			}
 		}

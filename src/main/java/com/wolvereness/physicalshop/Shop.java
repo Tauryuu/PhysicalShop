@@ -61,8 +61,8 @@ public class Shop {
 		if (material == null) {
 			throw new InvalidSignException();
 		}
-		String[] buySet = PhysicalShop.getConfig().getBuyPattern().split(lines[1]);
-		String[] sellSet = PhysicalShop.getConfig().getSellPattern().split(lines[2]);
+		String[] buySet = PhysicalShop.getPluginConfig().getBuyPattern().split(lines[1]);
+		String[] sellSet = PhysicalShop.getPluginConfig().getSellPattern().split(lines[2]);
 		if (buySet.length != 4 && sellSet.length != 4) throw new InvalidSignException();
 		Rate buyRate = null, sellRate = null;
 		ShopMaterial buyCurrency = null, sellCurrency = null;

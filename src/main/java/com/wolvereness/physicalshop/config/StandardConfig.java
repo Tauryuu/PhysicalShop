@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 
 import com.wolvereness.physicalshop.exception.InvalidSignException;
+import com.wolvereness.util.Config;
 
 import de.diddiz.LogBlock.LogBlock;
 
@@ -184,5 +185,10 @@ public class StandardConfig extends Config {
 		String s = getConfig().getString("currencies." + c);
 		if(s == null) throw new InvalidSignException();
 		return s;
+	}
+
+	@Override
+	public String getName() {
+		return "PhysicalShop";
 	}
 }

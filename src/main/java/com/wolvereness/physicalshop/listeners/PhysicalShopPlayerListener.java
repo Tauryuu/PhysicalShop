@@ -23,7 +23,7 @@ public class PhysicalShopPlayerListener extends PlayerListener {
 
 		final Block block = e.getClickedBlock();
 
-		if (PhysicalShop.getConfig().isProtectChestAccess()
+		if (PhysicalShop.getPluginConfig().isProtectChestAccess()
 				&& (e.getAction() == Action.RIGHT_CLICK_BLOCK)
 				&& (block.getType() == Material.CHEST)) {
 			final Shop shop = ShopHelpers.getShop(block

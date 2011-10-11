@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.wolvereness.physicalshop.PhysicalShop;
+import com.wolvereness.util.Config;
 
 /**
  * Class controlling the localization.
@@ -78,8 +79,8 @@ public class LocaleConfig extends Config {
 	}
 
 	private static String quickCheck(String language, ClassLoader cl) {
-		new File(directory + File.separatorChar + subDirectory).mkdir();
-		File f = new File(directory + File.separatorChar + subDirectory + File.separatorChar + language);
+		new File("plugins" + File.separator + "PhysicalShop" + File.separatorChar + subDirectory).mkdir();
+		File f = new File("plugins" + File.separator + "PhysicalShop" + File.separatorChar + subDirectory + File.separatorChar + language);
 		if (makeFile(f))
 			return language;
 		try {
@@ -112,6 +113,11 @@ public class LocaleConfig extends Config {
 		if (s == null && !phrases.containsKey(message))
 			throw new NoSuchFieldException(message + " not found.");
 		return s;
+	}
+
+	@Override
+	public String getName() {
+		return "PhysicalShop";
 	}
 
 }

@@ -87,7 +87,7 @@ public class ShopMaterial {
 	
 	public ShopMaterial(final char c) throws InvalidSignException
 	{
-		String materialString[] = PhysicalShop.getConfig().getMaterialCode(c).split(":");
+		String materialString[] = PhysicalShop.getPluginConfig().getMaterialCode(c).split(":");
 		material = Material.matchMaterial(materialString[0]);
 		if(material == null)
 		{
@@ -103,7 +103,7 @@ public class ShopMaterial {
 	}
 
 	public ShopMaterial(final String string) throws InvalidMaterialException {
-		final Matcher m = PhysicalShop.getConfig().getMaterialPattern()
+		final Matcher m = PhysicalShop.getPluginConfig().getMaterialPattern()
 				.matcher(string);
 
 		if (!m.find()) {

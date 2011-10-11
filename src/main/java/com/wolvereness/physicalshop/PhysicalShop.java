@@ -160,7 +160,7 @@ public class PhysicalShop extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static StandardConfig getConfig() {
+	public static StandardConfig getPluginConfig() {
 		return PhysicalShop.configuration;
 	}
 

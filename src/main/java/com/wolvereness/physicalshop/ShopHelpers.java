@@ -34,7 +34,7 @@ public class ShopHelpers {
 		try {
 			if (block.getRelative(BlockFace.DOWN).getType() == Material.CHEST) {
 				return new ChestShop(sign);
-			} else if (ownerName.equalsIgnoreCase(PhysicalShop.getConfig()
+			} else if (ownerName.equalsIgnoreCase(PhysicalShop.getPluginConfig()
 					.getServerOwner())) {
 				return new Shop(sign);
 			} else {

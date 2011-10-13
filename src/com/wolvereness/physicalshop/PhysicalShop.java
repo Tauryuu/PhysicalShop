@@ -17,6 +17,8 @@ import org.yi.acru.bukkit.Lockette.Lockette;
 
 import com.griefcraft.lwc.LWCPlugin;
 import com.griefcraft.model.Protection;
+import com.wolvereness.physicalshop.Permissions;
+import com.wolvereness.physicalshop.ShopMaterial;
 import com.wolvereness.physicalshop.config.LocaleConfig;
 import com.wolvereness.physicalshop.config.StandardConfig;
 import com.wolvereness.physicalshop.listeners.PhysicalShopBlockListener;

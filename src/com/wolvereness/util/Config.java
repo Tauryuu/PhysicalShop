@@ -2,8 +2,13 @@ package com.wolvereness.util;
 
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
 
-import org.bukkit.util.config.Configuration;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  * Parent class for config implementations
@@ -12,7 +17,7 @@ import org.bukkit.util.config.Configuration;
  * 
  */
 public abstract class Config {
-	public final String directory = "plugins" + File.separator + getName(); //"PhysicalShop";
+	public final String directory = "plugins" + File.separator + getName();
 	private final Configuration configuration;
 
 	/**
@@ -20,16 +25,20 @@ public abstract class Config {
 	 * 
 	 * @param subDirectory
 	 * @param fileName
+	 * @throws IOException 
 	 */
-	public Config(String subDirectory, String fileName) {
+	public Config(String subDirectory, String fileName){
 		new File(directory).mkdir();
 		new File(directory + File.separator + subDirectory).mkdir();
 		File file = new File(directory + File.separator + subDirectory + File.separator + fileName);
 		makeFile(file);
-		configuration = new Configuration(file);
-		configuration.load();
+		configuration = YamlConfiguration.loadConfiguration(file);
 		defaults();
-		configuration.save();
+		try {
+			((FileConfiguration) configuration).save(file);
+		} catch (IOException e) {
+			Bukkit.getLogger().log(Level.WARNING, "Failed to write config to " + fileName + " caused by " + e);
+		}
 	}
 	/**
 	 * Simply the name of the folder for the plugin. This is called before the object is initialized, so you should not reference any local variables whatsoever.
@@ -41,6 +50,7 @@ public abstract class Config {
 	 * Creates a config in the standard config directory
 	 * 
 	 * @param fileName Name of the file, or null if you wish for an inactive config
+	 * @throws IOException 
 	 */
 	public Config(String fileName) {
 		if (fileName == null) {
@@ -50,10 +60,13 @@ public abstract class Config {
 		new File(directory).mkdir();
 		File file = new File(directory + File.separator + fileName);
 		makeFile(file);
-		configuration = new Configuration(file);
-		configuration.load();
+		configuration = YamlConfiguration.loadConfiguration(file);
 		defaults();
-		configuration.save();
+		try {
+			((FileConfiguration) configuration).save(file);
+		} catch (IOException e) {
+			Bukkit.getLogger().log(Level.WARNING, "Failed to write config to " + fileName + " caused by " + e);
+		}
 	}
 
 	/**
@@ -81,7 +94,7 @@ public abstract class Config {
 		return true;
 	}
 	/**
-	 * Should access all defaults of the current config. This is called before the object is initialized, so you should not reference any local variables whatsoever.
+	 * Should set all defaults of the current config. This is called before the object is initialized, so you should not reference any local variables whatsoever.
 	 */
 	public abstract void defaults();
 

@@ -21,5 +21,5 @@ STATUS_ONE_CURRENCY: Sklep zawiera %1$d %2$s i %3$d %4$s
 CHEST_INVENTORY_FULL: Sklep jest pelny
 CANT_USE: Nie masz pozwolenia na uzywanie sklepow
 BUY_RATE: Mozesz kupic %1$d %2$s za %3$d %4$s
-CANT_RELOAD_CONFIG: Nie masz pozwolenia na odswiezyc konfiguracja
+CANT_RELOAD_CONFIG: Nie masz pozwolenia na odswiezanie konfiguracji
 CONFIG_RELOADED: Konfiguracja zostala odswiezona

@@ -1,3 +1,6 @@
+(10/13/11) - v8.1.3 - Bukkit API Change Build
+- Changed config to new API
+- Changed API pertaining to config (it's now under com.wolvereness.util)
 (10/2/11) - v8.1.2 - bugfix build
 - fire can no longer break shop
 (9/29/11) - v8.1.1 - minor feature build

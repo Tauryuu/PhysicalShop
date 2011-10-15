@@ -1,4 +1,4 @@
-package com.wolvereness.physicalshop.config;
+package com.wolvereness.physicalshop;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.wolvereness.physicalshop.PhysicalShop;
 import com.wolvereness.util.Config;
 
 /**
@@ -69,6 +68,7 @@ public class LocaleConfig extends Config {
 		for (Map.Entry<String, String> e : phrases.entrySet()) {
 			e.setValue(getConfig().getString(e.getKey(), e.getValue()));
 		}
+		//getConfig().
 		/*
 		 * Field[] fields = getClass().getFields(); LocaleConfig empty = new
 		 * LocaleConfig(); for(Field f : fields) { try { f.set(this,

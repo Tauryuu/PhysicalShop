@@ -1,4 +1,4 @@
-package com.wolvereness.physicalshop.config;
+package com.wolvereness.physicalshop;
 
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;

@@ -3,7 +3,6 @@
  */
 package com.wolvereness.physicalshop;
 
-import com.wolvereness.physicalshop.config.LocaleConfig;
 
 /**
  * Over arching class for messaging players.

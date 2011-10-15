@@ -3,10 +3,12 @@ package com.wolvereness.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -100,5 +102,10 @@ public abstract class Config {
 
 	protected final Configuration getConfig() {
 		return configuration;
+	}
+	protected final Set<String> getKeys(String node) {
+		ConfigurationSection section = configuration.getConfigurationSection(node);
+		if(section == null) return null;
+		return section.getKeys(false);
 	}
 }

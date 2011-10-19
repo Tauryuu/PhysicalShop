@@ -1,7 +1,5 @@
 package com.wolvereness.physicalshop.listeners;
 
-import java.util.Arrays;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -92,31 +90,10 @@ public class PhysicalShopBlockListener extends BlockListener {
 			return;
 		}
 
-		// Messaging.save(e.getPlayer());
-		Shop shop = null;
+		final String playerName = ShopHelpers.truncateName(e.getPlayer().getName());
 		try {
-			shop = new Shop(e.getLines());
+			new Shop(e.getLines());
 		} catch (InvalidSignOwnerException ex) {
-			if (PhysicalShop.getPluginConfig().isAutoFillName()) {
-				e.setLine(3, ShopHelpers.truncateName(e.getPlayer().getName()));
-				try {
-					shop = new Shop(e.getLines());
-				} catch (InvalidSignException ex2) {
-					throw new RuntimeException(
-						"Logical Falicy on event:" + 
-						e +
-						", for player:" + 
-						e.getPlayer() +
-						", for block:" +
-						e.getBlock() +
-						", for sign text:" +
-						Arrays.toString(e.getLines()),
-						ex2
-						);
-				}
-			} else {
-				return;
-			}
 		} catch (InvalidSignException ex) {
 			return;
 		}
@@ -127,14 +104,15 @@ public class PhysicalShopBlockListener extends BlockListener {
 			return;
 		}
 
-		if (shop.getOwnerName().equalsIgnoreCase(PhysicalShop.getPluginConfig().getServerOwner())) {
+		if (e.getLine(3).equalsIgnoreCase(PhysicalShop.getPluginConfig().getServerOwner())) {
 			if (!PhysicalShop.getPermissions().hasAdmin(e.getPlayer())) {
 				PhysicalShop.sendMessage(e.getPlayer(), "CANT_BUILD_SERVER");
 				e.setCancelled(true);
 				return;
 			}
 		} else {
-			if (e.getBlock().getRelative(BlockFace.DOWN).getType() == Material.CHEST
+			if (
+					e.getBlock().getRelative(BlockFace.DOWN).getType() == Material.CHEST
 					&& PhysicalShop.getPluginConfig().isExistingChestProtected()
 					&& !PhysicalShop.getPermissions().hasAdmin(e.getPlayer())
 					&& !PhysicalShop.lwcCheck(e.getBlock().getRelative(BlockFace.DOWN), e.getPlayer())
@@ -143,6 +121,8 @@ public class PhysicalShopBlockListener extends BlockListener {
 				e.setCancelled(true);
 				return;
 			}
+			if (PhysicalShop.getPluginConfig().isAutoFillName())
+				e.setLine(3, playerName);
 		}
 	}
 }

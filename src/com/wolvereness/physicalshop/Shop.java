@@ -46,17 +46,16 @@ public class Shop {
 	private final ShopMaterial material;
 	private final String ownerName;
 	private final Rate sellRate;
-	private final Sign sign;
+	private Sign sign = null;
 	private final ShopMaterial buyCurrency;
 	private final ShopMaterial sellCurrency;
 	/**
-	 * Initializes Shop based off of sign.
-	 * @param sign
-	 * @throws InvalidSignException If sign does not match correct pattern.
+	 * Initializes a shop based off the lines from a sign. Used to check validity.
+	 * @param lines
+	 * @throws InvalidSignException
 	 */
-	public Shop(final Sign sign) throws InvalidSignException {
-		this.sign = sign;
-		String[] lines = sign.getLines();
+	public Shop(String[] lines) throws InvalidSignException {
+		//String[] lines = sign.getLines();
 		material = Shop.getMaterial(lines);
 
 		if (material == null) {
@@ -95,12 +94,19 @@ public class Shop {
 		//	throw new InvalidSignException();
 		//}
 
-		ownerName = Shop.getOwnerName(sign.getLines());
-
-		if ((ownerName == null) || ownerName.isEmpty()) {
+		if (((this.ownerName = lines[3]) == null) || ownerName.isEmpty()) {
 			throw new InvalidSignOwnerException();
 		}
-	}	
+	}
+	/**
+	 * Initializes Shop based off of sign.
+	 * @param sign
+	 * @throws InvalidSignException If sign does not match correct pattern.
+	 */
+	public Shop(final Sign sign) throws InvalidSignException {
+		this(sign.getLines());
+		this.sign = sign;
+	}
 	/**
 	 * Invokes the buy routine for player.
 	 * @param player

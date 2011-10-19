@@ -1,5 +1,7 @@
 package com.wolvereness.physicalshop.listeners;
 
+import java.util.Arrays;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -12,6 +14,8 @@ import org.bukkit.event.block.SignChangeEvent;
 import com.wolvereness.physicalshop.PhysicalShop;
 import com.wolvereness.physicalshop.Shop;
 import com.wolvereness.physicalshop.ShopHelpers;
+import com.wolvereness.physicalshop.exception.InvalidSignException;
+import com.wolvereness.physicalshop.exception.InvalidSignOwnerException;
 
 public class PhysicalShopBlockListener extends BlockListener {
 
@@ -89,10 +93,31 @@ public class PhysicalShopBlockListener extends BlockListener {
 		}
 
 		// Messaging.save(e.getPlayer());
-
-		final String[] lines = e.getLines();
-
-		if (Shop.getMaterial(lines) == null) {
+		Shop shop = null;
+		try {
+			shop = new Shop(e.getLines());
+		} catch (InvalidSignOwnerException ex) {
+			if (PhysicalShop.getPluginConfig().isAutoFillName()) {
+				e.setLine(3, ShopHelpers.truncateName(e.getPlayer().getName()));
+				try {
+					shop = new Shop(e.getLines());
+				} catch (InvalidSignException ex2) {
+					throw new RuntimeException(
+						"Logical Falicy on event:" + 
+						e +
+						", for player:" + 
+						e.getPlayer() +
+						", for block:" +
+						e.getBlock() +
+						", for sign text:" +
+						Arrays.toString(e.getLines()),
+						ex2
+						);
+				}
+			} else {
+				return;
+			}
+		} catch (InvalidSignException ex) {
 			return;
 		}
 
@@ -102,9 +127,7 @@ public class PhysicalShopBlockListener extends BlockListener {
 			return;
 		}
 
-		final String ownerName = Shop.getOwnerName(lines);
-
-		if (ownerName.equalsIgnoreCase(PhysicalShop.getPluginConfig().getServerOwner())) {
+		if (shop.getOwnerName().equalsIgnoreCase(PhysicalShop.getPluginConfig().getServerOwner())) {
 			if (!PhysicalShop.getPermissions().hasAdmin(e.getPlayer())) {
 				PhysicalShop.sendMessage(e.getPlayer(), "CANT_BUILD_SERVER");
 				e.setCancelled(true);
@@ -119,10 +142,6 @@ public class PhysicalShopBlockListener extends BlockListener {
 				PhysicalShop.sendMessage(e.getPlayer(), "EXISTING_CHEST");
 				e.setCancelled(true);
 				return;
-			}
-
-			if (PhysicalShop.getPluginConfig().isAutoFillName()) {
-				e.setLine(3, e.getPlayer().getName());
 			}
 		}
 	}

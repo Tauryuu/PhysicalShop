@@ -87,4 +87,10 @@ public class ShopHelpers {
 		return true;
 	}
 
+	public static String truncateName(String name) {
+		if(name == null) return null;
+		if(name.length()<=15) return name;
+		return name.substring(0, 14);
+	}
+
 }

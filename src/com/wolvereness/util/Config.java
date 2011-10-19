@@ -27,7 +27,6 @@ public abstract class Config {
 	 * 
 	 * @param subDirectory
 	 * @param fileName
-	 * @throws IOException 
 	 */
 	public Config(String subDirectory, String fileName){
 		new File(directory).mkdir();
@@ -52,7 +51,6 @@ public abstract class Config {
 	 * Creates a config in the standard config directory
 	 * 
 	 * @param fileName Name of the file, or null if you wish for an inactive config
-	 * @throws IOException 
 	 */
 	public Config(String fileName) {
 		if (fileName == null) {

@@ -23,14 +23,16 @@ public class PhysicalShopPlayerListener extends PlayerListener {
 
 		final Block block = e.getClickedBlock();
 
-		if (PhysicalShop.getPluginConfig().isProtectChestAccess()
+		if (
+				PhysicalShop.getPluginConfig().isProtectChestAccess()
 				&& (e.getAction() == Action.RIGHT_CLICK_BLOCK)
 				&& (block.getType() == Material.CHEST)) {
-			final Shop shop = ShopHelpers.getShop(block
-					.getRelative(BlockFace.UP));
-
-			if ((shop != null) && shop.isShopBlock(block)
-					&& !shop.isOwner(e.getPlayer())) {
+			final Shop shop = ShopHelpers.getShop(block.getRelative(BlockFace.UP));
+			if (
+					(shop != null)
+					&& shop.isShopBlock(block)
+					&& !shop.isOwner(e.getPlayer())
+					&& !PhysicalShop.getPermissions().hasAdmin(e.getPlayer())) {
 				PhysicalShop.sendMessage(e.getPlayer(), "CANT_USE_CHEST");
 				e.setCancelled(true);
 				return;

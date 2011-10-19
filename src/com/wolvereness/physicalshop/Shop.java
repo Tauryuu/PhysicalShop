@@ -9,6 +9,7 @@ import org.bukkit.inventory.Inventory;
 import com.wolvereness.physicalshop.exception.InvalidExchangeException;
 import com.wolvereness.physicalshop.exception.InvalidMaterialException;
 import com.wolvereness.physicalshop.exception.InvalidSignException;
+import com.wolvereness.physicalshop.exception.InvalidSignOwnerException;
 
 public class Shop {
 	/**
@@ -97,7 +98,7 @@ public class Shop {
 		ownerName = Shop.getOwnerName(sign.getLines());
 
 		if ((ownerName == null) || ownerName.isEmpty()) {
-			throw new InvalidSignException();
+			throw new InvalidSignOwnerException();
 		}
 	}	
 	/**
@@ -223,14 +224,14 @@ public class Shop {
 	public boolean isShopBlock(final Block block) {
 		final Block signBlock = sign.getBlock();
 
-		if (block == signBlock) {
+		if (block.equals(signBlock)) {
 			return true;
 		}
 
 		final org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign
 				.getData();
 
-		return signBlock.getRelative(signData.getAttachedFace()) == block;
+		return block.equals(signBlock.getRelative(signData.getAttachedFace()));
 	}
 
 	protected boolean sell(final Player player) {

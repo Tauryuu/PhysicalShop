@@ -107,7 +107,7 @@ public class ChestShop extends Shop {
 
 		final Block down = getSign().getBlock().getRelative(BlockFace.DOWN);
 
-		if ((down.getType() == Material.CHEST) && (down == block)) {
+		if ((down.getType() == Material.CHEST) && (down.equals(block))) {
 			return true;
 		}
 

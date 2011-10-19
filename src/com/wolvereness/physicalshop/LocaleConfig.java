@@ -22,7 +22,7 @@ public class LocaleConfig extends Config {
 	 * @param cl
 	 */
 	public LocaleConfig(String language, ClassLoader cl) {
-		super(subDirectory, getLanguageFile(language.toUpperCase(), cl));
+		super(subDirectory, language + ".yml", getLanguageFile(language.toUpperCase(), cl));
 	}
 
 	/**

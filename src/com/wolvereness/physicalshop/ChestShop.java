@@ -58,17 +58,6 @@ public class ChestShop extends Shop {
 		return true;
 	}
 	
-	@Deprecated
-	@Override
-	/**
-	 * Gets the current amount of shop's currency in the chest.
-	 * @return
-	 */
-	public int getShopCapital() {
-		return InventoryHelpers.getCount(chest.getInventory(),
-				PhysicalShop.getCurrency());
-	}
-	
 	@Override
 	/**
 	 * Gets the current amount of shop's currency in the chest.

@@ -3,6 +3,7 @@ package com.wolvereness.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -28,47 +29,44 @@ public abstract class Config {
 	 * @param subDirectory
 	 * @param fileName
 	 */
-	public Config(String subDirectory, String fileName){
-		new File(directory).mkdir();
-		new File(directory + File.separator + subDirectory).mkdir();
-		File file = new File(directory + File.separator + subDirectory + File.separator + fileName);
-		makeFile(file);
-		configuration = YamlConfiguration.loadConfiguration(file);
+	public Config(String subDirectory, String fileName, InputStream defaultYaml){
+		configuration = config(new File(directory + File.separator + subDirectory + File.separator + fileName),defaultYaml);
+	}
+	/**
+	 * Creates a config in the standard config directory
+	 * 
+	 * @param fileName Name of the file, or null if you wish for an inactive config
+	 */
+	public Config(String fileName, InputStream defaultYaml) {
+		if (fileName == null || defaultYaml == null) {
+			configuration = null;
+			return;
+		}
+		configuration = config(new File(directory + File.separator + fileName), defaultYaml);
+	}
+	private final Configuration config(File f, InputStream defaultYaml) {
+		Configuration configuration = null;
+		if(f.exists()) {
+			configuration = YamlConfiguration.loadConfiguration(f);
+		} else {
+			configuration = new YamlConfiguration();
+		}
+		configuration.setDefaults(YamlConfiguration.loadConfiguration(defaultYaml));
+		configuration.options().copyDefaults(true);
 		defaults();
 		try {
-			((FileConfiguration) configuration).save(file);
+			((FileConfiguration) configuration).save(f);
 		} catch (IOException e) {
-			Bukkit.getLogger().log(Level.WARNING, "Failed to write config to " + fileName + " caused by " + e);
+			Bukkit.getLogger().log(Level.WARNING, "Failed to write config to " + f + " caused by " + e);
 		}
+		return configuration;
 	}
 	/**
 	 * Simply the name of the folder for the plugin. This is called before the object is initialized, so you should not reference any local variables whatsoever.
 	 * @return The name of the plugin.
 	 */
 	public abstract String getName();
-
-	/**
-	 * Creates a config in the standard config directory
-	 * 
-	 * @param fileName Name of the file, or null if you wish for an inactive config
-	 */
-	public Config(String fileName) {
-		if (fileName == null) {
-			configuration = null;
-			return;
-		}
-		new File(directory).mkdir();
-		File file = new File(directory + File.separator + fileName);
-		makeFile(file);
-		configuration = YamlConfiguration.loadConfiguration(file);
-		defaults();
-		try {
-			((FileConfiguration) configuration).save(file);
-		} catch (IOException e) {
-			Bukkit.getLogger().log(Level.WARNING, "Failed to write config to " + fileName + " caused by " + e);
-		}
-	}
-
+	
 	/**
 	 * Allows for temporary instances of config. Should NOT be called, use standard constructor with null parameter instead.
 	 */
@@ -76,7 +74,6 @@ public abstract class Config {
 	protected Config() {
 		configuration = null;
 	}
-
 	/**
 	 * Makes file f if it does not exist
 	 * 
@@ -95,6 +92,7 @@ public abstract class Config {
 	}
 	/**
 	 * Should set all defaults of the current config. This is called before the object is initialized, so you should not reference any local variables whatsoever.
+	 * @return 
 	 */
 	public abstract void defaults();
 

@@ -18,7 +18,6 @@ import org.yi.acru.bukkit.Lockette.Lockette;
 import com.griefcraft.lwc.LWCPlugin;
 import com.griefcraft.model.Protection;
 import com.wolvereness.physicalshop.Permissions;
-import com.wolvereness.physicalshop.ShopMaterial;
 import com.wolvereness.physicalshop.listeners.PhysicalShopBlockListener;
 import com.wolvereness.physicalshop.listeners.PhysicalShopEntityListener;
 import com.wolvereness.physicalshop.listeners.PhysicalShopPlayerListener;
@@ -29,7 +28,6 @@ import de.diddiz.LogBlock.LogBlock;
 public class PhysicalShop extends JavaPlugin {
 
 	private static StandardConfig configuration;
-	private static ShopMaterial currency;
 	private static Permissions permissions;
 	private static Consumer consumer = null;
 	private static boolean logblockChecked = false;
@@ -73,18 +71,8 @@ public class PhysicalShop extends JavaPlugin {
 	}
 
 	private static void loadConfig(ClassLoader classLoader) {
-		PhysicalShop.configuration = new StandardConfig();
-//		log("Loaded config");
-		// PhysicalShop.currency = PhysicalShop.configuration.getCurrency();
-//		log("Loaded permissions");
-//		try
-//		{
-			locale = new LocaleConfig(configuration.getLanguage(), classLoader);
-//		} catch (Throwable t) {
-//			t.printStackTrace();
-//		}
-//		log("Loaded locales");
-		
+		configuration = new StandardConfig(classLoader);
+		locale = new LocaleConfig(configuration.getLanguage(), classLoader);
 	}
 
 	/**
@@ -162,16 +150,6 @@ public class PhysicalShop extends JavaPlugin {
 	 */
 	public static StandardConfig getPluginConfig() {
 		return PhysicalShop.configuration;
-	}
-
-	/**
-	 * Currency is now per-shop.
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public static ShopMaterial getCurrency() {
-		return PhysicalShop.currency;
 	}
 	
 	/**

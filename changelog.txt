@@ -2,9 +2,12 @@
 - changed config to new API
 - changed API pertaining to config (it's now under com.wolvereness.util)
 - changed API for creating shops (added a constructor for just sign text)
+- removed some deprecated nonfunctional code
+- removed some useless / old commented code blocks
 - added admin bypass to chest-access
 - fixed new issue with chest protections
 - fixed auto filling playername for invalid signs
+- chest protection not fully compatible with VoxelSniper
 (10/2/11) - v8.1.2 - bugfix build
 - fire can no longer break shop
 (9/29/11) - v8.1.1 - minor feature build

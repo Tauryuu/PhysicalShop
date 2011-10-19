@@ -17,45 +17,14 @@ public class StandardConfig extends Config {
 	private Pattern materialPattern = null;
 	private Pattern sellPattern;
 	private Pattern buyPattern;
-	//private Map<char, String> currencies;
 
-	public StandardConfig() {
-		super(fileName);
+	public StandardConfig(ClassLoader cl) {
+		super(fileName,cl.getResourceAsStream(fileName));
 	}
 
 	@Override
 	public void defaults() {
-		// getCurrency();
-		getConfig().getString("currencies.g", "Gold Ingot");
-		getMaterialPattern();
-		getBuyPattern();
-		getSellPattern();
-		getServerOwner();
-		getLanguage();
-		isAutoFillName();
-		isProtectBreak();
-		isProtectChestAccess();
-		isLogBlocked();
-		isProtectExplode();
-		isExistingChestProtected();
 	}
-
-	/*
-	public ShopMaterial getCurrency() 
-	{
-		final Material material = Material
-			.getMaterial(
-				configuration
-					.getInt(
-						"currency",
-						Material
-							.GOLD_INGOT
-							.getId()
-						)
-				);
-		final byte durability = (byte) configuration.getInt("currency-data", 0);
-		return new ShopMaterial(material, durability);
-	} //*/
 	 
 	/**
 	 * Pattern for material match (first line on signs)
@@ -65,7 +34,7 @@ public class StandardConfig extends Config {
 	public Pattern getMaterialPattern() {
 		return materialPattern == null
 			?
-				materialPattern = Pattern.compile(getConfig().getString("material-pattern", "\\[(.+)\\]"))
+				materialPattern = Pattern.compile(getConfig().getString("material-pattern"))
 			:
 				materialPattern;
 	}
@@ -79,7 +48,7 @@ public class StandardConfig extends Config {
 	public Pattern getSellPattern() {
 		return sellPattern == null
 			?
-				sellPattern = Pattern.compile(getConfig().getString("sell-pattern","Sell (?=\\d{1,4} for)|(?<=\\d{1,4}) for (?=\\d{1,4})|(?<= for \\d{1,4})(?=\\D)")) 
+				sellPattern = Pattern.compile(getConfig().getString("sell-pattern")) 
 			: 
 				sellPattern;
 	}
@@ -94,7 +63,7 @@ public class StandardConfig extends Config {
 	public Pattern getBuyPattern() {
 		return buyPattern == null 
 			? 
-				buyPattern = Pattern.compile(getConfig().getString("buy-pattern","Buy (?=\\d{1,4} for)|(?<=\\d{1,4}) for (?=\\d{1,4})|(?<= for \\d{1,4})(?=\\D)")) 
+				buyPattern = Pattern.compile(getConfig().getString("buy-pattern")) 
 			: 
 				buyPattern;
 	}
@@ -105,7 +74,7 @@ public class StandardConfig extends Config {
 	 * @return
 	 */
 	public String getServerOwner() {
-		return getConfig().getString("server-shop", "[Server]");
+		return getConfig().getString("server-shop");
 	}
 
 	/**
@@ -178,7 +147,7 @@ public class StandardConfig extends Config {
 	 * @return
 	 */
 	public String getLanguage() {
-		return getConfig().getString("language", "English");
+		return getConfig().getString("language");
 	}
 
 	public String getMaterialCode(char c) throws InvalidSignException {

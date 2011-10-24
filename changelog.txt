@@ -1,3 +1,5 @@
+(10/24/11) - v8.1.5 - bugfix build
+- fixed new locale issue
 (10/24/11) - v8.1.4 - bugfix build
 - fixed bukkit permissions
 - fixed locale issue

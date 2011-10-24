@@ -22,7 +22,7 @@ public class LocaleConfig extends Config {
 	 * @param cl
 	 */
 	public LocaleConfig(String language, ClassLoader cl) {
-		super(subDirectory, language + ".yml", getLanguageFile(language.toUpperCase(), cl));
+		super(subDirectory, language + ".yml", getLanguageFile(language, cl));
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class LocaleConfig extends Config {
 	private static InputStream getLanguageFile(String language, ClassLoader cl) {
 		InputStream lin = cl.getResourceAsStream(subDirectory + '/' + language + ".yml");
 		if (lin == null) {
-			return cl.getResourceAsStream(subDirectory + '/' + "ENGLISH" + ".yml");
+			return cl.getResourceAsStream(subDirectory+"/ENGLISH.yml");
 		} else {
 			return lin;
 		}

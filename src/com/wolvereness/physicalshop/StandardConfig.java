@@ -147,7 +147,7 @@ public class StandardConfig extends Config {
 	 * @return
 	 */
 	public String getLanguage() {
-		return getConfig().getString("language");
+		return getConfig().getString("language").toUpperCase();
 	}
 
 	public String getMaterialCode(char c) throws InvalidSignException {

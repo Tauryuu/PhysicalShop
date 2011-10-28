@@ -1,5 +1,5 @@
 (10/27/11) - v8.2.0 - feature build
-- changed com.wolvereness.util.Config API to allow quick saving
+- changed com.wolvereness.util.Config API to allow quick saving and fixed state of getConfig() during defaults()
 - added custom item names
 - added custom aliases items
 - fixed glitch involving the g currency

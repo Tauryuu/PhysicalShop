@@ -26,8 +26,7 @@ public class ShopMaterial {
 	private static HashMap<String, ShopMaterial> identifiers = null;
 	private static HashMap<ShopMaterial, String> names = null;
 	
-	private static byte parseDurability(final String string,
-			final Material material) {
+	private static byte parseDurability(final String string,final Material material) {
 		try {
 			return Byte.parseByte(string);
 		} catch (final NumberFormatException e) {
@@ -154,13 +153,11 @@ public class ShopMaterial {
 
 		for (int i = 0; i < string.length(); ++i) {
 			if ((i == 0) || (string.charAt(i) == ' ')) {
-				material = Material.matchMaterial(string.substring(i)
-						.trim());
+				material = Material.matchMaterial(string.substring(i).trim());
 
 				if (material != null) {
 					this.material = material;
-					durability = ShopMaterial.parseDurability(string
-							.substring(0, i).trim(), material);
+					durability = ShopMaterial.parseDurability(string.substring(0, i).trim(), material);
 					return;
 				}
 			}
@@ -241,25 +238,26 @@ public class ShopMaterial {
 	 */
 	public static void addCurrency(final char currencyIdentifier, String item) {
 		try {
-			currencies.put(Character.valueOf(currencyIdentifier), getShopMaterial(item));
+			currencies.put(Character.valueOf(currencyIdentifier), new ShopMaterial(junkCharacters.matcher(spaces.matcher(item).replaceAll("_")).replaceAll("").toUpperCase()));
 		} catch (InvalidMaterialException e) {
 			PhysicalShop.logSevere("Configuration error for shop currency:'"+currencyIdentifier+"' for item:"+item);
 		}
 	}
 
 	private static final Pattern spaces = Pattern.compile("\\s+");
-	private static final Pattern junkCharacters = Pattern.compile("[^A-Za-z0-9:]");
+	private static final Pattern junkCharacters = Pattern.compile("[^A-Za-z0-9:_]");
 	/**
 	 * Adds an alias to use to reference a shop material
 	 * @param alias
 	 * @param item
 	 */
 	public static void addShopMaterialAlias(String alias, String item) {
-		alias = junkCharacters.matcher(spaces.matcher(alias).replaceAll("_").replace('|',':')).replaceAll("");
+		alias = junkCharacters.matcher(spaces.matcher(alias).replaceAll("_").replace('|',':')).replaceAll("").toUpperCase();
 		try {
-			identifiers.put(alias,getShopMaterial(item));
+			identifiers.put(alias,getShopMaterial(item, false));
 		} catch (InvalidMaterialException e) {
 			PhysicalShop.logSevere("Configuration error for material alias: "+alias+" mapping to: "+item);
+			//e.printStackTrace();
 		}
 	}
 	/**
@@ -269,7 +267,7 @@ public class ShopMaterial {
 	 */
 	public static void setMaterialName(String material, String name) {
 		try {
-			names.put(getShopMaterial(material), name);
+			names.put(getShopMaterial(material, false), name);
 		} catch (InvalidMaterialException e) {
 			PhysicalShop.logSevere("Configuration error for material name: "+name+" mapping from: "+material);
 		}
@@ -281,10 +279,21 @@ public class ShopMaterial {
 	 * @throws InvalidMaterialException
 	 */
 	public static ShopMaterial getShopMaterial(String name) throws InvalidMaterialException {
-		name = junkCharacters.matcher(spaces.matcher(name).replaceAll("_")).replaceAll("");
+		return getShopMaterial(name,true);
+	}
+
+	/**
+	 * Retrieves the material based on a name.
+	 * @param name Name to search / interpret
+	 * @param checkPattern Checks to see if name matches pattern
+	 * @return ShopMaterial that should be associated with the name.
+	 * @throws InvalidMaterialException
+	 */
+	public static ShopMaterial getShopMaterial(String name, boolean checkPattern) throws InvalidMaterialException {
+		name = junkCharacters.matcher(spaces.matcher(checkPattern ? checkPattern(name) : name).replaceAll("_")).replaceAll("").toUpperCase();
 		if(identifiers.containsKey(name)) 
 			return identifiers.get(name);
-		return new ShopMaterial(checkPattern(name));
+		return new ShopMaterial(name);
 	}
 	
 	/**

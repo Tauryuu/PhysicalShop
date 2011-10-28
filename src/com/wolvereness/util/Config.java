@@ -41,7 +41,7 @@ public abstract class Config {
 	 * @param fileName Name of the file, or null if you wish for an inactive config
 	 */
 	public Config(String fileName, InputStream defaultYaml) {
-		if (fileName == null || defaultYaml == null) {
+		if (fileName == null) {
 			configuration = null;
 			file = null;
 			return;
@@ -57,8 +57,10 @@ public abstract class Config {
 		} else {
 			configuration = new YamlConfiguration();
 		}
-		configuration.setDefaults(YamlConfiguration.loadConfiguration(defaultYaml));
-		configuration.options().copyDefaults(true);
+		if(defaultYaml != null) {
+			configuration.setDefaults(YamlConfiguration.loadConfiguration(defaultYaml));
+			configuration.options().copyDefaults(true);
+		}
 		return configuration;
 	}
 	/**

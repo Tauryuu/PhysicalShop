@@ -27,7 +27,6 @@ public class LocaleConfig extends Config {
 
 	/**
 	 * Accesses all current defaults.
-	 * @return 
 	 */
 	@Override
 	public void defaults() {

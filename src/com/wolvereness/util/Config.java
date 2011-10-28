@@ -32,6 +32,8 @@ public abstract class Config {
 	 */
 	public Config(String subDirectory, String fileName, InputStream defaultYaml){
 		configuration = config(file = new File(directory + File.separator + subDirectory + File.separator + fileName),defaultYaml);
+		defaults();
+		save();
 	}
 	/**
 	 * Creates a config in the standard config directory
@@ -45,6 +47,8 @@ public abstract class Config {
 			return;
 		}
 		configuration = config(file = new File(directory + File.separator + fileName), defaultYaml);
+		defaults();
+		save();
 	}
 	private final FileConfiguration config(File f, InputStream defaultYaml) {
 		FileConfiguration configuration = null;
@@ -55,8 +59,6 @@ public abstract class Config {
 		}
 		configuration.setDefaults(YamlConfiguration.loadConfiguration(defaultYaml));
 		configuration.options().copyDefaults(true);
-		defaults();
-		save();
 		return configuration;
 	}
 	/**

@@ -63,7 +63,6 @@ public class PhysicalShop extends JavaPlugin {
 			if(temp != null && temp instanceof Lockette)
 				lockette = (Lockette) temp;
 			log(String.format("version %s enabled", getDescription().getVersion()));
-			logblockChecked = false;
 		} catch (RuntimeException t) {
 			t.printStackTrace();
 			throw t;
@@ -73,6 +72,7 @@ public class PhysicalShop extends JavaPlugin {
 	private static void loadConfig(ClassLoader classLoader) {
 		configuration = new StandardConfig(classLoader);
 		locale = new LocaleConfig(configuration.getLanguage(), classLoader);
+		logblockChecked = false;
 	}
 
 	/**

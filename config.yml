@@ -1,8 +1,6 @@
 buy-pattern: Buy (?=\d{1,4} for)|(?<=\d{1,4}) for (?=\d{1,4})|(?<= for \d{1,4})(?=\D)
 protect-explode: true
 material-pattern: \[(.+)\]
-currencies:
-  g: Gold Ingot
 auto-fill-name: true
 server-shop: '[Server]'
 protect-chest-access: true

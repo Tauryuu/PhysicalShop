@@ -1,5 +1,6 @@
 package com.wolvereness.physicalshop;
 
+import java.util.Set;
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 
@@ -24,8 +25,12 @@ public class StandardConfig extends Config {
 
 	@Override
 	public void defaults() {
+		Set<String> currencies = getKeys("currencies");
+		if(currencies == null || currencies.isEmpty()) {
+			getConfig().set("currencies.g", "Gold Ingot");
+		}
+		
 	}
-	 
 	/**
 	 * Pattern for material match (first line on signs)
 	 * 
@@ -151,8 +156,9 @@ public class StandardConfig extends Config {
 	}
 
 	public String getMaterialCode(char c) throws InvalidSignException {
-		String s = getConfig().getString("currencies." + c);
-		if(s == null) throw new InvalidSignException();
+		final Object o = getConfig().get("currencies." + c);
+		if(o == null) throw new InvalidSignException();
+		final String s = String.valueOf(o);
 		return s;
 	}
 

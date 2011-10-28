@@ -1,4 +1,4 @@
-package com.wolvereness.physicalshop;
+package com.wolvereness.physicalshop.config;
 
 import java.io.InputStream;
 

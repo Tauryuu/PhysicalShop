@@ -97,7 +97,7 @@ public abstract class Config {
 	 * Should set all defaults of the current config. This is called before the object is initialized, so you should not reference any local variables whatsoever.
 	 * @return 
 	 */
-	public abstract void defaults();
+	protected abstract void defaults();
 	/**
 	 * Saves the configuration to the original file.
 	 */

@@ -19,7 +19,7 @@ public class Shop {
 	 */
 	public static ShopMaterial getMaterial(final String[] lines) {
 		try {
-			return new ShopMaterial(lines[0]);
+			return ShopMaterial.getShopMaterial(lines[0]);
 		} catch (final InvalidMaterialException e) {
 			return null;
 		}
@@ -70,7 +70,7 @@ public class Shop {
 		{
 			if(buySet.length == 4)
 			{
-				buyCurrency = new ShopMaterial(buySet[3].charAt(0));
+				buyCurrency = ShopMaterial.getCurrency(buySet[3].charAt(0));
 				buyRate = getRate(buySet[1],buySet[2]);
 			}
 		} catch (InvalidSignException e) {}
@@ -78,7 +78,7 @@ public class Shop {
 		{
 			if(sellSet.length == 4)
 			{
-				sellCurrency = new ShopMaterial(sellSet[3].charAt(0));
+				sellCurrency = ShopMaterial.getCurrency(sellSet[3].charAt(0));
 				sellRate =  getRate(sellSet[1],sellSet[2]);
 			} 
 		} catch (InvalidSignException e) {}

@@ -1,3 +1,10 @@
+(10/27/11) - v8.2.0 - feature build
+- changed com.wolvereness.util.Config API to allow quick saving
+- added custom item names
+- added custom aliases items
+- fixed glitch involving the g currency
+- fixed glitch reading in a currency, workaround for bukkit (you can now use numbers)
+- fixed checking logblock after config reload
 (10/24/11) - v8.1.5 - bugfix build
 - fixed new locale issue
 (10/24/11) - v8.1.4 - bugfix build

@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 
+import com.wolvereness.physicalshop.ShopMaterial;
 import com.wolvereness.physicalshop.exception.InvalidSignException;
 import com.wolvereness.util.Config;
 
@@ -24,12 +25,15 @@ public class StandardConfig extends Config {
 	}
 
 	@Override
-	public void defaults() {
+	protected void defaults() {
 		Set<String> currencies = getKeys("currencies");
 		if(currencies == null || currencies.isEmpty()) {
 			getConfig().set("currencies.g", "Gold Ingot");
+			currencies.add("g");
 		}
-		
+		ShopMaterial.resetCurrencies(currencies.size());
+		for(String currency : currencies)
+			ShopMaterial.addCurrency(currency.charAt(0), String.valueOf(getConfig().get("currencies."+currency.charAt(0))));
 	}
 	/**
 	 * Pattern for material match (first line on signs)

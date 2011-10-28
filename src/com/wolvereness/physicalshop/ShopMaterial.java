@@ -1,6 +1,8 @@
 package com.wolvereness.physicalshop;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.CoalType;
 import org.bukkit.DyeColor;
@@ -20,6 +22,10 @@ import com.wolvereness.physicalshop.exception.InvalidSignException;
 
 public class ShopMaterial {
 
+	private static HashMap<Character, ShopMaterial> currencies = null;
+	private static HashMap<String, ShopMaterial> identifiers = null;
+	private static HashMap<ShopMaterial, String> names = null;
+	
 	private static byte parseDurability(final String string,
 			final Material material) {
 		try {
@@ -72,9 +78,41 @@ public class ShopMaterial {
 		return sb.toString();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return (material.getId() << 8) | durability;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof ShopMaterial)) {
+			return false;
+		}
+		final ShopMaterial other = (ShopMaterial) obj;
+		if (durability != other.durability) {
+			return false;
+		}
+		if (material != other.material) {
+			return false;
+		}
+		return true;
+	}
+
 	private final byte durability;
 	private final Material material;
-
+	
 	public ShopMaterial(final ItemStack itemStack) {
 		material = itemStack.getType();
 		durability = (byte) itemStack.getDurability();
@@ -85,6 +123,7 @@ public class ShopMaterial {
 		this.durability = durability;
 	}
 	
+	@Deprecated
 	public ShopMaterial(final char c) throws InvalidSignException
 	{
 		String materialString[] = PhysicalShop.getPluginConfig().getMaterialCode(c).split(":");
@@ -102,16 +141,8 @@ public class ShopMaterial {
 		}
 	}
 
-	public ShopMaterial(final String string) throws InvalidMaterialException {
-		final Matcher m = PhysicalShop.getPluginConfig().getMaterialPattern()
-				.matcher(string);
-
-		if (!m.find()) {
-			throw new InvalidMaterialException();
-		}
-
-		final String matchString = m.group(1);
-		final String[] strings = matchString.split(":");
+	private ShopMaterial(final String string) throws InvalidMaterialException {
+		final String[] strings = string.split(":");
 
 		if (strings.length == 2) {
 			material = Material.matchMaterial(strings[0]);
@@ -121,14 +152,14 @@ public class ShopMaterial {
 
 		Material material = null;
 
-		for (int i = 0; i < matchString.length(); ++i) {
-			if ((i == 0) || (matchString.charAt(i) == ' ')) {
-				material = Material.matchMaterial(matchString.substring(i)
+		for (int i = 0; i < string.length(); ++i) {
+			if ((i == 0) || (string.charAt(i) == ' ')) {
+				material = Material.matchMaterial(string.substring(i)
 						.trim());
 
 				if (material != null) {
 					this.material = material;
-					durability = ShopMaterial.parseDurability(matchString
+					durability = ShopMaterial.parseDurability(string
 							.substring(0, i).trim(), material);
 					return;
 				}
@@ -136,22 +167,6 @@ public class ShopMaterial {
 		}
 
 		throw new InvalidMaterialException();
-	}
-
-	@Override
-	public boolean equals(final Object object) {
-		if (this == object) {
-			return true;
-		}
-
-		if (!(object instanceof ShopMaterial)) {
-			return false;
-		}
-
-		final ShopMaterial item = (ShopMaterial) object;
-
-		return (getMaterial() == item.getMaterial())
-				&& (getDurability() == item.getDurability());
 	}
 
 	public short getDurability() {
@@ -169,6 +184,10 @@ public class ShopMaterial {
 
 	@Override
 	public String toString() {
+		
+		if(names.containsKey(this)) {
+			return names.get(this);
+		}
 		final StringBuilder sb = new StringBuilder();
 		final MaterialData data = material.getNewData(durability);
 
@@ -203,5 +222,102 @@ public class ShopMaterial {
 		}
 
 		return ShopMaterial.toHumanReadableString(sb.toString());
+	}
+	/**
+	 * Searches for ShopMaterial associated with currency character.
+	 * @param currencyIdentifier The character the shop will be associated with.
+	 * @return ShopMaterial Associated with the currencyIdentifier
+	 * @throws InvalidSignException If the currency isn't listed. 
+	 */
+	public static ShopMaterial getCurrency(final char currencyIdentifier) throws InvalidSignException {
+		final Character searchCharacter = Character.valueOf(currencyIdentifier);
+		if(!currencies.containsKey(searchCharacter)) throw new InvalidSignException();
+		return currencies.get(searchCharacter);
+	}
+	/**
+	 * Adds currency represented by item.
+	 * @param currencyIdentifier
+	 * @param item
+	 */
+	public static void addCurrency(final char currencyIdentifier, String item) {
+		try {
+			currencies.put(Character.valueOf(currencyIdentifier), getShopMaterial(item));
+		} catch (InvalidMaterialException e) {
+			PhysicalShop.logSevere("Configuration error for shop currency:'"+currencyIdentifier+"' for item:"+item);
+		}
+	}
+
+	private static final Pattern spaces = Pattern.compile("\\s+");
+	private static final Pattern junkCharacters = Pattern.compile("[^A-Za-z0-9:]");
+	/**
+	 * Adds an alias to use to reference a shop material
+	 * @param alias
+	 * @param item
+	 */
+	public static void addShopMaterialAlias(String alias, String item) {
+		alias = junkCharacters.matcher(spaces.matcher(alias).replaceAll("_").replace('|',':')).replaceAll("");
+		try {
+			identifiers.put(alias,getShopMaterial(item));
+		} catch (InvalidMaterialException e) {
+			PhysicalShop.logSevere("Configuration error for material alias: "+alias+" mapping to: "+item);
+		}
+	}
+	/**
+	 * Sets the name that a shop material should display
+	 * @param material
+	 * @param name
+	 */
+	public static void setMaterialName(String material, String name) {
+		try {
+			names.put(getShopMaterial(material), name);
+		} catch (InvalidMaterialException e) {
+			PhysicalShop.logSevere("Configuration error for material name: "+name+" mapping from: "+material);
+		}
+	}
+	/**
+	 * Retrieves the material based on a name.
+	 * @param name Name to search / interpret
+	 * @return ShopMaterial that should be associated with the name.
+	 * @throws InvalidMaterialException
+	 */
+	public static ShopMaterial getShopMaterial(String name) throws InvalidMaterialException {
+		name = junkCharacters.matcher(spaces.matcher(name).replaceAll("_")).replaceAll("");
+		if(identifiers.containsKey(name)) 
+			return identifiers.get(name);
+		return new ShopMaterial(checkPattern(name));
+	}
+	
+	/**
+	 * Blanks the current names
+	 * @param load
+	 */
+	public static void resetNames(int load) {
+		names = new HashMap<ShopMaterial,String>(load);
+	}
+	
+	/**
+	 * Blanks the current identifiers
+	 * @param load
+	 */
+	public static void resetIdentifiers(int load) {
+		identifiers = new HashMap<String,ShopMaterial>(load);
+	}
+	
+	/**
+	 * Blanks the current currencies
+	 * @param load
+	 */
+	public static void resetCurrencies(int load) {
+		currencies = new HashMap<Character,ShopMaterial>(load);
+	}
+	private static String checkPattern(String string) throws InvalidMaterialException {
+		final Matcher m = PhysicalShop.getPluginConfig().getMaterialPattern().matcher(string);
+
+		if (!m.find()) {
+			throw new InvalidMaterialException();
+		}
+
+
+		return m.group(1);
 	}
 }

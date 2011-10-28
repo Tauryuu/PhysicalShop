@@ -18,6 +18,9 @@ import org.yi.acru.bukkit.Lockette.Lockette;
 import com.griefcraft.lwc.LWCPlugin;
 import com.griefcraft.model.Protection;
 import com.wolvereness.physicalshop.Permissions;
+import com.wolvereness.physicalshop.config.LocaleConfig;
+import com.wolvereness.physicalshop.config.MaterialConfig;
+import com.wolvereness.physicalshop.config.StandardConfig;
 import com.wolvereness.physicalshop.listeners.PhysicalShopBlockListener;
 import com.wolvereness.physicalshop.listeners.PhysicalShopEntityListener;
 import com.wolvereness.physicalshop.listeners.PhysicalShopPlayerListener;
@@ -72,6 +75,7 @@ public class PhysicalShop extends JavaPlugin {
 	private static void loadConfig(ClassLoader classLoader) {
 		configuration = new StandardConfig(classLoader);
 		locale = new LocaleConfig(configuration.getLanguage(), classLoader);
+		new MaterialConfig();
 		logblockChecked = false;
 	}
 

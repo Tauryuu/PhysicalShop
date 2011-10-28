@@ -21,7 +21,8 @@ import org.bukkit.configuration.file.FileConfiguration;
  */
 public abstract class Config {
 	public final String directory = "plugins" + File.separator + getName();
-	private final Configuration configuration;
+	private final File file;
+	private final FileConfiguration configuration;
 
 	/**
 	 * Creates a config in the subdirectory for standard configs.
@@ -30,7 +31,7 @@ public abstract class Config {
 	 * @param fileName
 	 */
 	public Config(String subDirectory, String fileName, InputStream defaultYaml){
-		configuration = config(new File(directory + File.separator + subDirectory + File.separator + fileName),defaultYaml);
+		configuration = config(file = new File(directory + File.separator + subDirectory + File.separator + fileName),defaultYaml);
 	}
 	/**
 	 * Creates a config in the standard config directory
@@ -40,12 +41,13 @@ public abstract class Config {
 	public Config(String fileName, InputStream defaultYaml) {
 		if (fileName == null || defaultYaml == null) {
 			configuration = null;
+			file = null;
 			return;
 		}
-		configuration = config(new File(directory + File.separator + fileName), defaultYaml);
+		configuration = config(file = new File(directory + File.separator + fileName), defaultYaml);
 	}
-	private final Configuration config(File f, InputStream defaultYaml) {
-		Configuration configuration = null;
+	private final FileConfiguration config(File f, InputStream defaultYaml) {
+		FileConfiguration configuration = null;
 		if(f.exists()) {
 			configuration = YamlConfiguration.loadConfiguration(f);
 		} else {
@@ -54,11 +56,7 @@ public abstract class Config {
 		configuration.setDefaults(YamlConfiguration.loadConfiguration(defaultYaml));
 		configuration.options().copyDefaults(true);
 		defaults();
-		try {
-			((FileConfiguration) configuration).save(f);
-		} catch (IOException e) {
-			Bukkit.getLogger().log(Level.WARNING, "Failed to write config to " + f + " caused by " + e);
-		}
+		save();
 		return configuration;
 	}
 	/**
@@ -73,6 +71,7 @@ public abstract class Config {
 	@Deprecated
 	protected Config() {
 		configuration = null;
+		file = null;
 	}
 	/**
 	 * Makes file f if it does not exist
@@ -95,6 +94,16 @@ public abstract class Config {
 	 * @return 
 	 */
 	public abstract void defaults();
+	/**
+	 * Saves the configuration to the original file.
+	 */
+	protected final void save() {
+		try {
+			configuration.save(file);
+		} catch (IOException e) {
+			Bukkit.getLogger().log(Level.WARNING, "Failed to write config to " + file + " caused by " + e);
+		}
+	}
 
 	protected final Configuration getConfig() {
 		return configuration;

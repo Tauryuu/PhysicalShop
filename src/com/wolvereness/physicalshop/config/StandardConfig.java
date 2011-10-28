@@ -1,5 +1,6 @@
 package com.wolvereness.physicalshop.config;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
@@ -27,7 +28,10 @@ public class StandardConfig extends Config {
 	@Override
 	protected void defaults() {
 		Set<String> currencies = getKeys("currencies");
-		if(currencies == null || currencies.isEmpty()) {
+		if(currencies == null) {
+			currencies = new HashSet<String>();
+		}
+		if (currencies.isEmpty()) {
 			getConfig().set("currencies.g", "Gold Ingot");
 			currencies.add("g");
 		}

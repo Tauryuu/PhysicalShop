@@ -1,3 +1,6 @@
+(10/29/11) - v8.2.1 - minor bugfix build
+- fixed an extra output message
+- changed failed aliases and names to warning instead of severe
 (10/27/11) - v8.2.0 - feature build
 - changed com.wolvereness.util.Config API to allow quick saving and fixed state of getConfig() during defaults()
 - added custom item names

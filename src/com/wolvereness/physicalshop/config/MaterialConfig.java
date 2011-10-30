@@ -20,7 +20,7 @@ public class MaterialConfig extends Config {
 		if(aliases == null) {
 			getConfig().set("Aliases.custom_name", "real item name or number");
 			ShopMaterial.resetIdentifiers(0);
-		} else if (aliases.size() == 1 && "item name or number".equals(getConfig().get("Aliases.custom_name"))) {
+		} else if (aliases.size() == 1 && "real item name or number".equals(getConfig().get("Aliases.custom_name"))) {
 			ShopMaterial.resetIdentifiers(0);
 		} else {
 			ShopMaterial.resetIdentifiers(aliases.size());

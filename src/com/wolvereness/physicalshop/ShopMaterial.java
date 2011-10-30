@@ -256,7 +256,7 @@ public class ShopMaterial {
 		try {
 			identifiers.put(alias,getShopMaterial(item, false));
 		} catch (InvalidMaterialException e) {
-			PhysicalShop.logSevere("Configuration error for material alias: "+alias+" mapping to: "+item);
+			PhysicalShop.logWarning("Configuration error for material alias: "+alias+" mapping to: "+item);
 			//e.printStackTrace();
 		}
 	}
@@ -269,7 +269,7 @@ public class ShopMaterial {
 		try {
 			names.put(getShopMaterial(material, false), name);
 		} catch (InvalidMaterialException e) {
-			PhysicalShop.logSevere("Configuration error for material name: "+name+" mapping from: "+material);
+			PhysicalShop.logWarning("Configuration error for material name: "+name+" mapping from: "+material);
 		}
 	}
 	/**

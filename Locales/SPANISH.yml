@@ -1,0 +1,25 @@
+NOT_ENOUGH_PLAYER_ITEMS: No tienes suficiente %1$s
+SELL: Vendiste %1$d %2$s por %3$d %4$s
+SELL_RATE: Puedes vender %1$d %2$s por %3$d %4$s
+CANT_PLACE_CHEST: No te encuentras habilitado para poner el cofre.
+DEPOSIT: Depositaste %1$d %2$s y %3$d %4$s
+WITHDRAW: Retiraste %1$d %2$s y %3$d %4$s
+STATUS: La tienda contiene %1$d %2$s, %3$d %4$s, y %5$d %6$s
+CANT_USE_CHEST: No te encuentras habilitado para utilizar esta tienda cofre.
+CANT_BUILD: No te encuentras habilitado para construir una tienda.
+NO_SELL: No puedes vender a esta tienda.
+NOT_ENOUGH_PLAYER_MONEY: No tienes suficiente %1$s
+CANT_BUILD_SERVER: No te encuentras habilitado para construir tiendas del servidor.
+EXISTING_CHEST: No puedes construir una tienda sobre un cofre ya existente.
+NOT_ENOUGH_SHOP_MONEY: Esta tienda no tiene suficiente %1$s
+BUY: Has comprado %1$d %2$s por %3$d %4$s
+CANT_DESTROY: No te encuentras habilitado para destruir esta tienda.
+NOT_ENOUGH_SHOP_ITEMS: Esta tienda no tiene suficiente %1$s
+NO_BUY: No puedes comprar a esta tienda.
+PLAYER_INVENTORY_FULL: Tu inventario está lleno.
+STATUS_ONE_CURRENCY: La tienda contiene %1$d %2$s y %3$d %4$s
+CHEST_INVENTORY_FULL: La tienda está llena.
+CANT_USE: No te encuentras habilitado para utilizar tiendas.
+BUY_RATE: Puedes comprar %1$d %2$s por %3$d %4$s
+CANT_RELOAD_CONFIG: No te encuentras habilitado para reiniciar la configuración.
+CONFIG_RELOADED: La configuración se ha reiniciado.

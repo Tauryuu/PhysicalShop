@@ -1,3 +1,5 @@
+(12/5/11) - v8.2.2 - translation build
+- Added Spanish translation, special thanks to federan
 (10/29/11) - v8.2.1 - minor bugfix build
 - fixed an extra output message
 - changed failed aliases and names to warning instead of severe

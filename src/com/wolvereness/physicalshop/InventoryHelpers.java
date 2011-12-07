@@ -5,8 +5,11 @@ import org.bukkit.inventory.ItemStack;
 
 import com.wolvereness.physicalshop.exception.InvalidExchangeException;
 
+/**
+ *
+ */
 public class InventoryHelpers {
-
+	// FIXME: Consider enchants
 	private static boolean add(final Inventory inventory, final ItemStack stack) {
 		int left = stack.getAmount();
 		final int maxStackSize = stack.getType().getMaxStackSize();
@@ -46,8 +49,17 @@ public class InventoryHelpers {
 		return left == 0;
 	}
 
-	public static void exchange(final Inventory inventory,
-			final ItemStack addStack, final ItemStack removeStack)
+	/**
+	 * This will add the addStack, and remove the removeStack from specified inventory. If it fails, it throws an error and resets inventories.
+	 * @param inventory inventory to use
+	 * @param addStack stack to add
+	 * @param removeStack stack to remove
+	 * @throws InvalidExchangeException if the inventory cannot support the stack or add, or not enough in inventory to remove the stack
+	 */
+	public static void exchange(
+	        final Inventory inventory,
+			final ItemStack addStack,
+			final ItemStack removeStack)
 			throws InvalidExchangeException {
 		final ShopItemStack[] oldItems = InventoryHelpers.getItems(inventory);
 
@@ -69,6 +81,12 @@ public class InventoryHelpers {
 		}
 	}
 
+	/**
+	 * Finds how much of given material is in given inventory
+	 * @param inventory the inventory to consider
+	 * @param material the material to consider
+	 * @return the amount of material in said inventory
+	 */
 	public static int getCount(final Inventory inventory,
 			final ShopMaterial material) {
 		int amount = 0;
@@ -83,6 +101,11 @@ public class InventoryHelpers {
 		return amount;
 	}
 
+	/**
+	 * Makes a set of shop item stacks to represent this inventory
+	 * @param inventory the inventory to consider
+	 * @return a set of shop item stacks
+	 */
 	public static ShopItemStack[] getItems(final Inventory inventory) {
 		final ItemStack[] contents = inventory.getContents();
 		final ShopItemStack[] items = new ShopItemStack[contents.length];
@@ -128,6 +151,11 @@ public class InventoryHelpers {
 		return left == 0;
 	}
 
+	/**
+	 * This changes slot in this inventory to given array
+	 * @param inventory the inventory to consider
+	 * @param items the items to overwrite the inventory with
+	 */
 	public static void setItems(final Inventory inventory,
 			final ShopItemStack[] items) {
 		for (int i = 0; i < items.length; ++i) {

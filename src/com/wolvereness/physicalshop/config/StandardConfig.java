@@ -3,6 +3,7 @@ package com.wolvereness.physicalshop.config;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
+
 import org.bukkit.Bukkit;
 
 import com.wolvereness.physicalshop.ShopMaterial;
@@ -15,13 +16,23 @@ import de.diddiz.LogBlock.LogBlock;
 //Inferior
 //"(?<=Buy )\\d{1,4}(?= for \\d{1,4}\\D)|(?<=Buy \\d{1,4} for )\\d{1,4}(?=\\D)|(?<=Buy \\d{1,4} for \\d{1,4})\\D"
 
+/**
+ *
+ */
 public class StandardConfig extends Config {
+	/**
+	 * "config.yml"
+	 */
 	public static final String fileName = "config.yml";
+	private Pattern buyPattern;
 	private Pattern materialPattern = null;
 	private Pattern sellPattern;
-	private Pattern buyPattern;
 
-	public StandardConfig(ClassLoader cl) {
+	/**
+	 * makes a new standard config, loading up defaults
+	 * @param cl Used to get a resource
+	 */
+	public StandardConfig(final ClassLoader cl) {
 		super(fileName,cl.getResourceAsStream(fileName));
 	}
 
@@ -36,13 +47,51 @@ public class StandardConfig extends Config {
 			currencies.add("g");
 		}
 		ShopMaterial.resetCurrencies(currencies.size());
-		for(String currency : currencies)
+		for(final String currency : currencies) {
 			ShopMaterial.addCurrency(currency.charAt(0), String.valueOf(getConfig().get("currencies."+currency.charAt(0))));
+		}
 	}
 	/**
+	 * Pattern for 'buy-from-shop' (second line on signs).
+	 * "buy-pattern"
+	 *
+	 * @return the pattern splitting the Buy line
+	 */
+	public Pattern getBuyPattern() {
+		return buyPattern == null
+			?
+				buyPattern = Pattern.compile(getConfig().getString("buy-pattern"))
+			:
+				buyPattern;
+	}
+
+	/**
+	 * Reads the current language to be used for LocaleConfig, defaults to "English".
+	 * @return the language to be used
+	 */
+	public String getLanguage() {
+		return getConfig().getString("language").toUpperCase();
+	}
+
+
+	/**
+	 * Gets the name of the item for the currency
+	 * @param c letter representing the currency
+	 * @return name of the item
+	 * @throws InvalidSignException if the currency isn't found
+	 */
+	@Deprecated
+	public String getMaterialCode(final char c) throws InvalidSignException {
+		final Object o = getConfig().get("currencies." + c);
+		if(o == null) throw new InvalidSignException();
+		final String s = String.valueOf(o);
+		return s;
+	}
+
+	/**
 	 * Pattern for material match (first line on signs)
-	 * 
-	 * @return
+	 *
+	 * @return the pattern matching the Material line
 	 */
 	public Pattern getMaterialPattern() {
 		return materialPattern == null
@@ -52,39 +101,29 @@ public class StandardConfig extends Config {
 				materialPattern;
 	}
 
+	@Override
+	public String getName() {
+		return "PhysicalShop";
+	}
+
 	/**
 	 * Pattern for 'sell-to-shop' (third line on signs).
 	 * "sell-pattern"
-	 * 
-	 * @return
+	 *
+	 * @return the pattern splitting the Sell line
 	 */
 	public Pattern getSellPattern() {
 		return sellPattern == null
 			?
-				sellPattern = Pattern.compile(getConfig().getString("sell-pattern")) 
-			: 
+				sellPattern = Pattern.compile(getConfig().getString("sell-pattern"))
+			:
 				sellPattern;
-	}
-	
-
-	/**
-	 * Pattern for 'buy-from-shop' (second line on signs).
-	 * "buy-pattern"
-	 * 
-	 * @return
-	 */
-	public Pattern getBuyPattern() {
-		return buyPattern == null 
-			? 
-				buyPattern = Pattern.compile(getConfig().getString("buy-pattern")) 
-			: 
-				buyPattern;
 	}
 
 	/**
 	 * Checks config to get the 'server-shop' name.
-	 * 
-	 * @return
+	 *
+	 * @return the name for server shops
 	 */
 	public String getServerOwner() {
 		return getConfig().getString("server-shop");
@@ -92,17 +131,46 @@ public class StandardConfig extends Config {
 
 	/**
 	 * Checks config to get the 'auto-fill-name' setting.
-	 * 
-	 * @return
+	 *
+	 * @return if names should be auto-set
 	 */
 	public boolean isAutoFillName() {
 		return getConfig().getBoolean("auto-fill-name", true);
 	}
 
 	/**
+	 * Checks config to see if 'protect-existing-chest' is set
+	 *
+	 * @return true
+	 */
+	public boolean isExistingChestProtected() {
+		return getConfig().getBoolean("protect-existing-chest", true);
+	}
+
+	/**
+	 * Checks config to see if LogBlock is enabled, with positive checks
+	 * LogBlock's status
+	 *
+	 * @return true if logblock is set to be on, and logblock is enabled, and chestaccess is turned on
+	 */
+	public boolean isLogBlocked() {
+		try {
+			return
+				getConfig().getBoolean("log-block", false)
+			// && Bukkit.getServer().getPluginManager().getPlugin("LogBlock") != null
+				&& ((LogBlock) Bukkit.getServer().getPluginManager().getPlugin("LogBlock")).getConfig().logChestAccess;
+		} catch (final NullPointerException e) {
+			return false; // not loaded or none-existent
+		} catch (final ClassCastException e) {
+			e.printStackTrace();
+			return false; // sanity check
+		}
+	}
+
+	/**
 	 * Checks config to get the 'protect-break' setting.
-	 * 
-	 * @return
+	 *
+	 * @return the config option for protection chest breaking
 	 */
 	public boolean isProtectBreak() {
 		return getConfig().getBoolean("protect-break", true);
@@ -110,8 +178,8 @@ public class StandardConfig extends Config {
 
 	/**
 	 * Checks config to get the 'protect-chest-access' setting.
-	 * 
-	 * @return
+	 *
+	 * @return the config option for protecting chest access
 	 */
 	public boolean isProtectChestAccess() {
 		return getConfig().getBoolean("protect-chest-access", true);
@@ -119,59 +187,10 @@ public class StandardConfig extends Config {
 
 	/**
 	 * Checks config to get the 'protect-explode'setting.
-	 * 
-	 * @return
+	 *
+	 * @return the config option for protecting chests from explosions
 	 */
 	public boolean isProtectExplode() {
 		return getConfig().getBoolean("protect-explode", true);
-	}
-
-	/**
-	 * Checks config to see if LogBlock is enabled, with positive checks
-	 * LogBlock's status
-	 * 
-	 * @return
-	 */
-	public boolean isLogBlocked() {
-		try {
-			return 
-				getConfig().getBoolean("log-block", false)
-			// && Bukkit.getServer().getPluginManager().getPlugin("LogBlock") != null
-				&& ((LogBlock) Bukkit.getServer().getPluginManager().getPlugin("LogBlock")).getConfig().logChestAccess;
-		} catch (NullPointerException e) {
-			return false; // not loaded or none-existent
-		} catch (ClassCastException e) {
-			e.printStackTrace();
-			return false; // sanity check
-		}
-	}
-
-	/**
-	 * Checks config to see if 'protect-existing-chest' is set
-	 * 
-	 * @return true
-	 */
-	public boolean isExistingChestProtected() {
-		return getConfig().getBoolean("protect-existing-chest", true);
-	}
-	
-	/**
-	 * Reads the current language to be used for LocaleConfig, defaults to "English".
-	 * @return
-	 */
-	public String getLanguage() {
-		return getConfig().getString("language").toUpperCase();
-	}
-
-	public String getMaterialCode(char c) throws InvalidSignException {
-		final Object o = getConfig().get("currencies." + c);
-		if(o == null) throw new InvalidSignException();
-		final String s = String.valueOf(o);
-		return s;
-	}
-
-	@Override
-	public String getName() {
-		return "PhysicalShop";
 	}
 }

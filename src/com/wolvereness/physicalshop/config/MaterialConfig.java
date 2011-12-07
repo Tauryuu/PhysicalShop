@@ -5,18 +5,20 @@ import java.util.Set;
 import com.wolvereness.physicalshop.ShopMaterial;
 import com.wolvereness.util.Config;
 
+/**
+ * @author Wolfe
+ *
+ */
 public class MaterialConfig extends Config {
+	/**
+	 * Creates a MaterialConfiguration
+	 */
 	public MaterialConfig() {
 		super("Locales", "Items.yml", null);
 	}
 	@Override
-	public String getName() {
-		return "PhysicalShop";
-	}
-
-	@Override
 	protected void defaults() {
-		Set<String> aliases = getKeys("Aliases");
+		final Set<String> aliases = getKeys("Aliases");
 		if(aliases == null) {
 			getConfig().set("Aliases.custom_name", "real item name or number");
 			ShopMaterial.resetIdentifiers(0);
@@ -24,10 +26,11 @@ public class MaterialConfig extends Config {
 			ShopMaterial.resetIdentifiers(0);
 		} else {
 			ShopMaterial.resetIdentifiers(aliases.size());
-			for(String alias : aliases)
+			for(final String alias : aliases) {
 				ShopMaterial.addShopMaterialAlias(alias, String.valueOf(getConfig().get("Aliases." + alias)));
+			}
 		}
-		Set<String> names = getKeys("Names");
+		final Set<String> names = getKeys("Names");
 		if (names == null) {
 			getConfig().set("Names.real_item_name_or_number|damage_value", "custom item name");
 			ShopMaterial.resetNames(0);
@@ -35,8 +38,14 @@ public class MaterialConfig extends Config {
 			ShopMaterial.resetNames(0);
 		} else {
 			ShopMaterial.resetNames(names.size());
-			for(String name : names)
+			for(final String name : names) {
 				ShopMaterial.setMaterialName(name,String.valueOf(getConfig().get("Names."+name)));
+			}
 		}
+	}
+
+	@Override
+	public String getName() {
+		return "PhysicalShop";
 	}
 }

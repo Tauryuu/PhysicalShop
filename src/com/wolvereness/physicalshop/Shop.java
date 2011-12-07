@@ -6,16 +6,20 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+
 import com.wolvereness.physicalshop.exception.InvalidExchangeException;
 import com.wolvereness.physicalshop.exception.InvalidMaterialException;
 import com.wolvereness.physicalshop.exception.InvalidSignException;
 import com.wolvereness.physicalshop.exception.InvalidSignOwnerException;
 
+/**
+ *
+ */
 public class Shop {
 	/**
 	 * Figures out the current material the shop uses.
-	 * @param lines
-	 * @return
+	 * @param lines text from sign
+	 * @return an associated shop material, or null if failed to decypher
 	 */
 	public static ShopMaterial getMaterial(final String[] lines) {
 		try {
@@ -27,7 +31,7 @@ public class Shop {
 	/**
 	 * Owner is found on fourth line of sign. Making player names longer than 16 characters is on my to-do list.
 	 * @param lines The set of lines associated with the sign for a shop.
-	 * @return
+	 * @return name of the owner of said shop
 	 */
 	public static String getOwnerName(final String[] lines) {
 		return lines[3];
@@ -37,51 +41,62 @@ public class Shop {
 		try
 		{
 			return new Rate(Integer.parseInt(amount), Integer.parseInt(price));
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			return null;
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	private static void updateInventory(final Player player) {
+		player.updateInventory();
+	}
+	private final ShopMaterial buyCurrency;
 	private final Rate buyRate;
 	private final ShopMaterial material;
 	private final String ownerName;
+	private final ShopMaterial sellCurrency;
 	private final Rate sellRate;
 	private Sign sign = null;
-	private final ShopMaterial buyCurrency;
-	private final ShopMaterial sellCurrency;
+	/**
+	 * Initializes Shop based off of sign.
+	 * @param sign the sign to consider
+	 * @throws InvalidSignException If sign does not match correct pattern.
+	 */
+	public Shop(final Sign sign) throws InvalidSignException {
+		this(sign.getLines());
+		this.sign = sign;
+	}
 	/**
 	 * Initializes a shop based off the lines from a sign. Used to check validity.
-	 * @param lines
-	 * @throws InvalidSignException
+	 * @param lines the text from the sign to consider
+	 * @throws InvalidSignException If the sign text does not match correct pattern.
 	 */
-	public Shop(String[] lines) throws InvalidSignException {
+	public Shop(final String[] lines) throws InvalidSignException {
 		//String[] lines = sign.getLines();
 		material = Shop.getMaterial(lines);
 
-		if (material == null) {
-			throw new InvalidSignException();
-		}
-		String[] buySet = PhysicalShop.getPluginConfig().getBuyPattern().split(lines[1]);
-		String[] sellSet = PhysicalShop.getPluginConfig().getSellPattern().split(lines[2]);
+		if (material == null) throw new InvalidSignException();
+		final String[] buySet = PhysicalShop.getPluginConfig().getBuyPattern().split(lines[1]);
+		final String[] sellSet = PhysicalShop.getPluginConfig().getSellPattern().split(lines[2]);
 		if (buySet.length != 4 && sellSet.length != 4) throw new InvalidSignException();
 		Rate buyRate = null, sellRate = null;
 		ShopMaterial buyCurrency = null, sellCurrency = null;
-		try 
+		try
 		{
 			if(buySet.length == 4)
 			{
 				buyCurrency = ShopMaterial.getCurrency(buySet[3].charAt(0));
 				buyRate = getRate(buySet[1],buySet[2]);
 			}
-		} catch (InvalidSignException e) {}
-		try 
+		} catch (final InvalidSignException e) {}
+		try
 		{
 			if(sellSet.length == 4)
 			{
 				sellCurrency = ShopMaterial.getCurrency(sellSet[3].charAt(0));
 				sellRate =  getRate(sellSet[1],sellSet[2]);
-			} 
-		} catch (InvalidSignException e) {}
+			}
+		} catch (final InvalidSignException e) {}
 		if (sellCurrency == null && buyCurrency == null) throw new InvalidSignException();
 		this.buyCurrency = buyCurrency;
 		this.sellCurrency = sellCurrency;
@@ -94,19 +109,9 @@ public class Shop {
 		//	throw new InvalidSignException();
 		//}
 
-		if (((this.ownerName = lines[3]) == null) || ownerName.isEmpty()) {
-			throw new InvalidSignOwnerException();
-		}
+		if (((this.ownerName = lines[3]) == null) || ownerName.isEmpty()) throw new InvalidSignOwnerException();
 	}
-	/**
-	 * Initializes Shop based off of sign.
-	 * @param sign
-	 * @throws InvalidSignException If sign does not match correct pattern.
-	 */
-	public Shop(final Sign sign) throws InvalidSignException {
-		this(sign.getLines());
-		this.sign = sign;
-	}
+
 	/**
 	 * Invokes the buy routine for player.
 	 * @param player
@@ -145,73 +150,106 @@ public class Shop {
 		return true;
 	}
 
+	/**
+	 * @return true if and only if this shop supports buying
+	 */
 	public boolean canBuy() {
 		return buyRate != null;
 	}
 
+	/**
+	 * This checks player for permission to destroy this shop
+	 * @param player player to consider
+	 * @return true if and only if player may destroy this shop
+	 */
+	public boolean canDestroy(final Player player) {
+		return (player != null)
+				&& PhysicalShop.getPermissions().hasAdmin(player);
+	}
+
+	/**
+	 * @return true if and only if this shop supports selling
+	 */
 	public boolean canSell() {
 		return sellRate != null;
 	}
 
+	/**
+	 * @return the currency associated with buying
+	 */
+	public ShopMaterial getBuyCurrency() {
+		return buyCurrency;
+	}
+	/**
+	 * @return the rate associated with buying
+	 */
 	public Rate getBuyRate() {
 		return buyRate;
 	}
 
+	/**
+	 * @return the material associated with this shop
+	 */
 	public ShopMaterial getMaterial() {
 		return material;
 	}
 
-	public ShopMaterial getBuyCurrency() {
-		return buyCurrency;
-	}
-	public ShopMaterial getSellCurrency() {
-		return sellCurrency;
-	}
-
+	/**
+	 * @return the owner of this shop
+	 */
 	public String getOwnerName() {
 		return ownerName;
 	}
 
+	/**
+	 * @return the currency associated with selling
+	 */
+	public ShopMaterial getSellCurrency() {
+		return sellCurrency;
+	}
+
+	/**
+	 * @return the rate associated with selling
+	 */
 	public Rate getSellRate() {
 		return sellRate;
 	}
 
 	/**
-	 * Gets the current amount of shop's currency in the chest.
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public int getShopCapital() {
-		return Integer.MAX_VALUE;
-	}
-
-	/**
 	 * Gets the current amount of shop's buying currency in the chest.
-	 * 
-	 * @return
+	 *
+	 * @return an amount of currency in this shop from purchases
 	 */
 	public int getShopBuyCapital() {
 		return Integer.MAX_VALUE;
 	}
 
 	/**
+	 * @return the amount of the shop's material currently stored
+	 */
+	public int getShopItems() {
+		return Integer.MAX_VALUE;
+	}
+
+	/**
 	 * Gets the current amount of shop's selling currency in the chest.
-	 * 
-	 * @return
+	 *
+	 * @return the amount of currency in this shop for selling
 	 */
 	public int getShopSellCapital() {
 		return Integer.MAX_VALUE;
 	}
 
-	public int getShopItems() {
-		return Integer.MAX_VALUE;
-	}
-
+	/**
+	 * @return the associated sign
+	 */
 	public Sign getSign() {
 		return sign;
 	}
-
+	/**
+	 * This method is called when a player right-clicks the sign. It considers the item in player's hand, and will act accordingly.
+	 * @param player the player to consider
+	 */
 	public void interact(final Player player) {
 		final ShopMaterial item = new ShopMaterial(player.getItemInHand());
 
@@ -221,18 +259,22 @@ public class Shop {
 			sell(player);
 		}
 	}
-
-	public boolean isOwner(final Player player) {
-		return (player != null)
-				&& PhysicalShop.getPermissions().hasAdmin(player);
+	/**
+	 * An alias for {@link #canDestroy(Player)}, now deprecated because of its ambiguity
+	 */
+	@SuppressWarnings("javadoc")
+	@Deprecated
+	public final boolean isOwner(final Player player) {
+		return canDestroy(player);
 	}
-
+	/**
+	 * @param block block to consider
+	 * @return true if said block is the sign for this chest or the sign for this shop is attached to said block
+	 */
 	public boolean isShopBlock(final Block block) {
 		final Block signBlock = sign.getBlock();
 
-		if (block.equals(signBlock)) {
-			return true;
-		}
+		if (block.equals(signBlock)) return true;
 
 		final org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign
 				.getData();
@@ -240,6 +282,80 @@ public class Shop {
 		return block.equals(signBlock.getRelative(signData.getAttachedFace()));
 	}
 
+	private void queryLogBlock(final Player player, final boolean selling) {
+		if (PhysicalShop.getLogBlock() == null)
+			return;
+		if((selling
+			?
+				(getSellRate().getPrice() * -1)
+			:
+				getBuyRate().getPrice()
+			) != 0) {
+			PhysicalShop
+				.getLogBlock()
+				.queueChestAccess(
+					player
+						.getName(),
+					sign
+						.getBlock()
+						.getRelative(BlockFace.DOWN)
+						.getLocation(),
+					54,
+					(short) (
+						selling
+						?
+							getSellCurrency()
+						:
+							getBuyCurrency()
+						)
+						.getMaterial()
+						.getId(),
+					(short) (
+						selling
+						?
+							(getSellRate().getPrice() * -1)
+						:
+							getBuyRate().getPrice()
+						),
+					(byte) 0
+					);
+		}
+		if ((selling
+			?
+				(getSellRate().getAmount())
+			:
+				(getBuyRate().getAmount() * -1)
+			) != 0 ) {
+			PhysicalShop
+				.getLogBlock()
+				.queueChestAccess(
+					player
+						.getName(),
+					sign
+						.getBlock()
+						.getRelative(BlockFace.DOWN)
+						.getLocation(),
+					54,
+					(short) getMaterial()
+						.getMaterial()
+						.getId(),
+					(short) (
+						selling
+						?
+							getSellRate().getAmount()
+						:
+							(getBuyRate().getAmount() * -1)
+						),
+					(byte) 0
+					);
+		}
+	}
+
+	/**
+	 * performs sell operation for player
+	 * @param player player to sell something to shop
+	 * @return true if successful
+	 */
 	protected boolean sell(final Player player) {
 		if (!canSell()) {
 			PhysicalShop.sendMessage(player, "NO_SELL");
@@ -275,83 +391,11 @@ public class Shop {
 		queryLogBlock(player, true);
 		return true;
 	}
-
-	@SuppressWarnings("deprecation")
-	private static void updateInventory(Player player) {
-		player.updateInventory();
-	}
-
-	private void queryLogBlock(Player player, boolean selling) {
-		if (PhysicalShop.getLogBlock() == null)
-			return;
-		if((selling 
-			?
-				(getSellRate().getPrice() * -1)
-			: 
-				getBuyRate().getPrice()
-			) != 0)
-			PhysicalShop
-				.getLogBlock()
-				.queueChestAccess(
-					player
-						.getName(),
-					sign
-						.getBlock()
-						.getRelative(BlockFace.DOWN)
-						.getLocation(),
-					54,
-					(short) (
-						selling
-						?
-							getSellCurrency()
-						:
-							getBuyCurrency()
-						)
-						.getMaterial()
-						.getId(),
-					(short) (
-						selling 
-						?
-							(getSellRate().getPrice() * -1)
-						: 
-							getBuyRate().getPrice()
-						),
-					(byte) 0
-					);
-		if ((selling 
-			? 
-				(getSellRate().getAmount())
-			: 
-				(getBuyRate().getAmount() * -1)
-			) != 0 )
-			PhysicalShop
-				.getLogBlock()
-				.queueChestAccess(
-					player
-						.getName(),
-					sign
-						.getBlock()
-						.getRelative(BlockFace.DOWN)
-						.getLocation(),
-					54,
-					(short) getMaterial()
-						.getMaterial()
-						.getId(),
-					(short) (
-						selling
-						? 
-							getSellRate().getAmount()
-						: 
-							(getBuyRate().getAmount() * -1)
-						),
-					(byte) 0
-					);
-	}
 	/**
 	 * Messages player p the rates for current Shop.
-	 * @param p
+	 * @param p the player to message
 	 */
-	public void status(Player p) {
+	public void status(final Player p) {
 		if (canBuy() && (getShopItems() >= buyRate.getAmount())) {
 			PhysicalShop.sendMessage(p, "BUY_RATE", buyRate.getAmount(),
 					material, buyRate.getPrice(), getBuyCurrency());

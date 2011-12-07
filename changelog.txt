@@ -1,3 +1,7 @@
+(12/6/11) - v8.2.3 - API, javadoc, and codestyle cleanup Build
+- Added massive amount of code comments... Enjoy...
+- Removed deprecated get currency method
+- Deprecated isOwner method from Shop (ambiguous, it was actually a static permission check), new method is now canDestroy
 (12/5/11) - v8.2.2 - translation build
 - Added Spanish translation, special thanks to federan
 (10/29/11) - v8.2.1 - minor bugfix build

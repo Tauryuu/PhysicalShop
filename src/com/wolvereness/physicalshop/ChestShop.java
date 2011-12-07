@@ -10,18 +10,24 @@ import org.bukkit.entity.Player;
 import com.wolvereness.physicalshop.exception.InvalidExchangeException;
 import com.wolvereness.physicalshop.exception.InvalidSignException;
 
+/**
+ *
+ */
 public class ChestShop extends Shop {
 
 	private final Chest chest;
 
+	/**
+	 * Creates a Shop with a chest
+	 * @param sign sign to consider
+	 * @throws InvalidSignException thrown if sign is not over a chest or sign is invalid
+	 */
 	public ChestShop(final Sign sign) throws InvalidSignException {
 		super(sign);
 
 		final Block chestBlock = sign.getBlock().getRelative(BlockFace.DOWN);
 
-		if (chestBlock.getType() != Material.CHEST) {
-			throw new InvalidSignException();
-		}
+		if (chestBlock.getType() != Material.CHEST) throw new InvalidSignException();
 
 		chest = (Chest) chestBlock.getState();
 	}
@@ -57,7 +63,14 @@ public class ChestShop extends Shop {
 		}
 		return true;
 	}
-	
+
+	@Override
+	public boolean canDestroy(final Player player) {
+		return (player != null)
+				&& (player.getName().equals(getOwnerName()) || PhysicalShop
+						.getPermissions().hasAdmin(player));
+	}
+
 	@Override
 	/**
 	 * Gets the current amount of shop's currency in the chest.
@@ -66,7 +79,12 @@ public class ChestShop extends Shop {
 	public int getShopBuyCapital() {
 		return InventoryHelpers.getCount(chest.getInventory(), getBuyCurrency());
 	}
-	
+
+	@Override
+	public int getShopItems() {
+		return InventoryHelpers.getCount(chest.getInventory(), getMaterial());
+	}
+
 	@Override
 	/**
 	 * Gets the current amount of shop's currency in the chest.
@@ -77,28 +95,12 @@ public class ChestShop extends Shop {
 	}
 
 	@Override
-	public int getShopItems() {
-		return InventoryHelpers.getCount(chest.getInventory(), getMaterial());
-	}
-
-	@Override
-	public boolean isOwner(final Player player) {
-		return (player != null)
-				&& (player.getName().equals(getOwnerName()) || PhysicalShop
-						.getPermissions().hasAdmin(player));
-	}
-
-	@Override
 	public boolean isShopBlock(final Block block) {
-		if (super.isShopBlock(block)) {
-			return true;
-		}
+		if (super.isShopBlock(block)) return true;
 
 		final Block down = getSign().getBlock().getRelative(BlockFace.DOWN);
 
-		if ((down.getType() == Material.CHEST) && (down.equals(block))) {
-			return true;
-		}
+		if ((down.getType() == Material.CHEST) && (down.equals(block))) return true;
 
 		return false;
 	}
@@ -136,7 +138,7 @@ public class ChestShop extends Shop {
 	}
 
 	@Override
-	public void status(Player p) {
+	public void status(final Player p) {
 		if (getBuyCurrency() == null)
 		{
 			PhysicalShop.sendMessage(p, "STATUS_ONE_CURRENCY", getShopSellCapital(), getSellCurrency(), getShopItems(), getMaterial());

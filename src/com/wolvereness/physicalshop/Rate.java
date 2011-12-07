@@ -1,7 +1,9 @@
 package com.wolvereness.physicalshop;
 
+/**
+ *
+ */
 public class Rate {
-
 	private final int amount;
 	private final int price;
 	/**
@@ -15,29 +17,30 @@ public class Rate {
 	}
 	/**
 	 * Returns the amount of shop material associated with this Rate.
-	 * @return
+	 * @return the amount
 	 */
 	public int getAmount() {
 		return amount;
 	}
 	/**
 	 * Returns the amount of shop material associated with this Rate that can be purchased with quantity of currency.
-	 * @param currency
-	 * @return
+	 * @param currency amount of currency to consider
+	 * @return the figured amount
 	 */
 	public int getAmount(final int currency) {
 		return price != 0 ? currency / price * amount : 0;
 	}
 	/**
 	 * Returns the price from the currency associated with this Rate.
-	 * @return
+	 * @return the price
 	 */
 	public int getPrice() {
 		return price;
 	}
 	/**
 	 * Returns the price from the currency associated with this Rate of how much said items would cost.
-	 * @return
+	 * @param items the number of items to consider
+	 * @return the figured price
 	 */
 	public int getPrice(final int items) {
 		return amount != 0 ? items / amount * price : 0;

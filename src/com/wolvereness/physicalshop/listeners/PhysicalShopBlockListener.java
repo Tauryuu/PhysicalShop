@@ -15,13 +15,14 @@ import com.wolvereness.physicalshop.ShopHelpers;
 import com.wolvereness.physicalshop.exception.InvalidSignException;
 import com.wolvereness.physicalshop.exception.InvalidSignOwnerException;
 
+/**
+ *
+ */
 public class PhysicalShopBlockListener extends BlockListener {
 
 	@Override
 	public void onBlockBreak(final BlockBreakEvent e) {
-		if (e.isCancelled() || ! PhysicalShop.getPluginConfig().isProtectBreak()) {
-			return;
-		}
+		if (e.isCancelled() || ! PhysicalShop.getPluginConfig().isProtectBreak()) return;
 
 		if (!ShopHelpers.isBlockDestroyable(e.getBlock(), e.getPlayer())) {
 			//PhysicalShop.sendMessage(e.getPlayer(),"CANT_DESTROY");
@@ -31,9 +32,7 @@ public class PhysicalShopBlockListener extends BlockListener {
 
 	@Override
 	public void onBlockBurn(final BlockBurnEvent e) {
-		if (e.isCancelled() || ! PhysicalShop.getPluginConfig().isProtectBreak()) {
-			return;
-		}
+		if (e.isCancelled() || ! PhysicalShop.getPluginConfig().isProtectBreak()) return;
 
 		// Messaging.save(e.getPlayer());
 
@@ -44,21 +43,13 @@ public class PhysicalShopBlockListener extends BlockListener {
 
 	@Override
 	public void onBlockPlace(final BlockPlaceEvent e) {
-		if (e.isCancelled()) {
-			return;
-		}
+		if (e.isCancelled()) return;
 
-		if (!PhysicalShop.getPluginConfig().isProtectChestAccess()) {
-			return;
-		}
+		if (!PhysicalShop.getPluginConfig().isProtectChestAccess()) return;
 
-		if (PhysicalShop.getPermissions().hasAdmin(e.getPlayer())) {
-			return;
-		}
+		if (PhysicalShop.getPermissions().hasAdmin(e.getPlayer())) return;
 
-		if (e.getBlock().getType() != Material.CHEST) {
-			return;
-		}
+		if (e.getBlock().getType() != Material.CHEST) return;
 
 		// Messaging.save(e.getPlayer());
 
@@ -86,15 +77,13 @@ public class PhysicalShopBlockListener extends BlockListener {
 
 	@Override
 	public void onSignChange(final SignChangeEvent e) {
-		if (e.isCancelled()) {
-			return;
-		}
+		if (e.isCancelled()) return;
 
 		final String playerName = ShopHelpers.truncateName(e.getPlayer().getName());
 		try {
 			new Shop(e.getLines());
-		} catch (InvalidSignOwnerException ex) {
-		} catch (InvalidSignException ex) {
+		} catch (final InvalidSignOwnerException ex) {
+		} catch (final InvalidSignException ex) {
 			return;
 		}
 
@@ -121,8 +110,9 @@ public class PhysicalShopBlockListener extends BlockListener {
 				e.setCancelled(true);
 				return;
 			}
-			if (PhysicalShop.getPluginConfig().isAutoFillName())
+			if (PhysicalShop.getPluginConfig().isAutoFillName()) {
 				e.setLine(3, playerName);
+			}
 		}
 	}
 }

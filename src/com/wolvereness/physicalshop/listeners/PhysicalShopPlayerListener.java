@@ -11,13 +11,14 @@ import com.wolvereness.physicalshop.PhysicalShop;
 import com.wolvereness.physicalshop.Shop;
 import com.wolvereness.physicalshop.ShopHelpers;
 
+/**
+ *
+ */
 public class PhysicalShopPlayerListener extends PlayerListener {
 
 	@Override
 	public void onPlayerInteract(final PlayerInteractEvent e) {
-		if (e.isCancelled()) {
-			return;
-		}
+		if (e.isCancelled()) return;
 
 		// Messaging.save(e.getPlayer());
 
@@ -31,7 +32,7 @@ public class PhysicalShopPlayerListener extends PlayerListener {
 			if (
 					(shop != null)
 					&& shop.isShopBlock(block)
-					&& !shop.isOwner(e.getPlayer())
+					&& !shop.canDestroy(e.getPlayer())
 					&& !PhysicalShop.getPermissions().hasAdmin(e.getPlayer())) {
 				PhysicalShop.sendMessage(e.getPlayer(), "CANT_USE_CHEST");
 				e.setCancelled(true);
@@ -41,9 +42,7 @@ public class PhysicalShopPlayerListener extends PlayerListener {
 
 		final Shop shop = ShopHelpers.getShop(block);
 
-		if (shop == null) {
-			return;
-		}
+		if (shop == null) return;
 
 		if (!PhysicalShop.getPermissions().hasUse(e.getPlayer())) {
 			PhysicalShop.sendMessage(e.getPlayer(), "CANT_USE");

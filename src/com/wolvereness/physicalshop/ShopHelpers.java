@@ -11,35 +11,35 @@ import org.bukkit.entity.Player;
 
 import com.wolvereness.physicalshop.exception.InvalidSignException;
 
+/**
+ *
+ */
 public class ShopHelpers {
 
+	/**
+	 * Attempts to create a new shop object based on this block
+	 * @param block the block to consider
+	 * @return null if block is not sign or said sign is invalid, otherwise a new associated {@link Shop} for this block
+	 */
 	public static Shop getShop(final Block block) {
-		if (block == null) {
-			return null;
-		}
+		if (block == null) return null;
 
 		if ((block.getType() != Material.SIGN_POST)
-				&& (block.getType() != Material.WALL_SIGN)) {
-			return null;
-		}
+				&& (block.getType() != Material.WALL_SIGN)) return null;
 
 		final Sign sign = (Sign) block.getState();
 
-		if (sign == null) {
-			return null;
-		}
+		if (sign == null) return null;
 
 		final String ownerName = Shop.getOwnerName(sign.getLines());
 
 		try {
-			if (block.getRelative(BlockFace.DOWN).getType() == Material.CHEST) {
+			if (block.getRelative(BlockFace.DOWN).getType() == Material.CHEST)
 				return new ChestShop(sign);
-			} else if (ownerName.equalsIgnoreCase(PhysicalShop.getPluginConfig()
-					.getServerOwner())) {
-				return new Shop(sign);
-			} else {
+			else if (ownerName.equalsIgnoreCase(PhysicalShop.getPluginConfig()
+					.getServerOwner())) return new Shop(sign);
+			else
 				return null;
-			}
 		} catch (final InvalidSignException e) {
 			return null;
 		}
@@ -77,7 +77,7 @@ public class ShopHelpers {
 		final List<Shop> shops = ShopHelpers.getShops(block);
 		if(player == null && !shops.isEmpty()) return false;
 		for (final Shop shop : shops) {
-			if (!shop.isOwner(player)) {
+			if (!shop.canDestroy(player)) {
 				PhysicalShop.sendMessage(player, "CANT_DESTROY");
 				shop.getSign().update();
 				return false;
@@ -87,7 +87,12 @@ public class ShopHelpers {
 		return true;
 	}
 
-	public static String truncateName(String name) {
+	/**
+	 * Cuts the name to 15 characters
+	 * @param name name to truncate
+	 * @return the first 15 characters of the name
+	 */
+	public static String truncateName(final String name) {
 		if(name == null) return null;
 		if(name.length()<=15) return name;
 		return name.substring(0, 14);

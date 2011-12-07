@@ -10,37 +10,55 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * Parent class for config implementations
- * 
+ *
  * @author Wolfe
- * 
+ *
  */
 public abstract class Config {
-	public final String directory = "plugins" + File.separator + getName();
-	private final File file;
-	private final FileConfiguration configuration;
-
 	/**
-	 * Creates a config in the subdirectory for standard configs.
-	 * 
-	 * @param subDirectory
-	 * @param fileName
+	 * Makes file f if it does not exist
+	 *
+	 * @param f file to assure it exists
+	 * @return true if the file already existed
 	 */
-	public Config(String subDirectory, String fileName, InputStream defaultYaml){
-		configuration = config(file = new File(directory + File.separator + subDirectory + File.separator + fileName),defaultYaml);
-		defaults();
-		save();
+	public static final boolean makeFile(final File f) {
+		if (!f.exists()) {
+			try {
+				f.createNewFile();
+			} catch (final java.io.IOException ex) {
+				ex.printStackTrace();
+			}
+			return false;
+		}
+		return true;
+	}
+	private final FileConfiguration configuration;
+	/**
+	 * The plugin directory
+	 */
+	public final String directory = "plugins" + File.separator + getName();
+
+	private final File file;
+	/**
+	 * Allows for temporary instances of config. Should NOT be called, use standard constructor with null parameter instead.
+	 */
+	@Deprecated
+	protected Config() {
+		configuration = null;
+		file = null;
 	}
 	/**
 	 * Creates a config in the standard config directory
-	 * 
+	 *
 	 * @param fileName Name of the file, or null if you wish for an inactive config
+	 * @param defaultYaml the stream to create the default yaml from
 	 */
-	public Config(String fileName, InputStream defaultYaml) {
+	public Config(final String fileName, final InputStream defaultYaml) {
 		if (fileName == null) {
 			configuration = null;
 			file = null;
@@ -50,7 +68,20 @@ public abstract class Config {
 		defaults();
 		save();
 	}
-	private final FileConfiguration config(File f, InputStream defaultYaml) {
+	/**
+	 * Creates a config in the subdirectory for standard configs.
+	 *
+	 * @param subDirectory the subdirectory in the plugin folder
+	 * @param fileName the filename to attempt to load and save to
+	 * @param defaultYaml the stream to create the default yaml from
+	 */
+	public Config(final String subDirectory, final String fileName, final InputStream defaultYaml){
+		configuration = config(file = new File(directory + File.separator + subDirectory + File.separator + fileName),defaultYaml);
+		defaults();
+		save();
+	}
+
+	private final FileConfiguration config(final File f, final InputStream defaultYaml) {
 		FileConfiguration configuration = null;
 		if(f.exists()) {
 			configuration = YamlConfiguration.loadConfiguration(f);
@@ -64,56 +95,38 @@ public abstract class Config {
 		return configuration;
 	}
 	/**
+	 * Should set all defaults of the current config. This is called before the object is initialized, so you should not reference any local variables whatsoever.
+	 */
+	protected abstract void defaults();
+	/**
+	 * @return the configuration for this config
+	 */
+	protected final Configuration getConfig() {
+		return configuration;
+	}
+	/**
+	 * @param node the node to get keys of
+	 * @return A set of key names for node, or null if invalid or not found
+	 */
+	protected final Set<String> getKeys(final String node) {
+		final ConfigurationSection section = configuration.getConfigurationSection(node);
+		if(section == null) return null;
+		return section.getKeys(false);
+	}
+
+	/**
 	 * Simply the name of the folder for the plugin. This is called before the object is initialized, so you should not reference any local variables whatsoever.
 	 * @return The name of the plugin.
 	 */
 	public abstract String getName();
-	
-	/**
-	 * Allows for temporary instances of config. Should NOT be called, use standard constructor with null parameter instead.
-	 */
-	@Deprecated
-	protected Config() {
-		configuration = null;
-		file = null;
-	}
-	/**
-	 * Makes file f if it does not exist
-	 * 
-	 * @param f
-	 */
-	public static final boolean makeFile(File f) {
-		if (!f.exists()) {
-			try {
-				f.createNewFile();
-			} catch (java.io.IOException ex) {
-				ex.printStackTrace();
-			}
-			return false;
-		}
-		return true;
-	}
-	/**
-	 * Should set all defaults of the current config. This is called before the object is initialized, so you should not reference any local variables whatsoever.
-	 */
-	protected abstract void defaults();
 	/**
 	 * Saves the configuration to the original file.
 	 */
 	protected final void save() {
 		try {
 			configuration.save(file);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Bukkit.getLogger().log(Level.WARNING, "Failed to write config to " + file + " caused by " + e);
 		}
-	}
-
-	protected final Configuration getConfig() {
-		return configuration;
-	}
-	protected final Set<String> getKeys(String node) {
-		ConfigurationSection section = configuration.getConfigurationSection(node);
-		if(section == null) return null;
-		return section.getKeys(false);
 	}
 }

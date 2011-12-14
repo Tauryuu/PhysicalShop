@@ -1,5 +1,6 @@
 package com.wolvereness.physicalshop;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +24,11 @@ import com.wolvereness.physicalshop.config.StandardConfig;
 import com.wolvereness.physicalshop.listeners.PhysicalShopBlockListener;
 import com.wolvereness.physicalshop.listeners.PhysicalShopEntityListener;
 import com.wolvereness.physicalshop.listeners.PhysicalShopPlayerListener;
+import com.wolvereness.util.CommandHandler;
+import com.wolvereness.util.CommandHandler.Reload;
+import com.wolvereness.util.CommandHandler.Verbose;
+import com.wolvereness.util.CommandHandler.Verbose.Verbosable;
+import com.wolvereness.util.CommandHandler.Version;
 
 import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
@@ -30,7 +36,7 @@ import de.diddiz.LogBlock.LogBlock;
 /**
  *
  */
-public class PhysicalShop extends JavaPlugin {
+public class PhysicalShop extends JavaPlugin implements Verbosable {
 
 	private static StandardConfig configuration;
 	private static Consumer consumer = null;
@@ -43,6 +49,18 @@ public class PhysicalShop extends JavaPlugin {
 	protected final static Logger logger = Logger.getLogger("Minecraft");
 	private static LWCPlugin lwc = null;
 	private static Permissions permissions;
+	/**
+	 * Command to reload PhysicalShop
+	 */
+	public static final String RELOAD_COMMAND = "RELOAD";
+	/**
+	 * Command to print verbose
+	 */
+	public static final String VERBOSE_COMMAND = "VERBOSE";
+	/**
+	 * Command to get version
+	 */
+	public static final String VERSION_COMMAND = "VERSION";
 	/**
 	 * This function checks for LogBlock if not already found after plugin
 	 * enabled
@@ -81,15 +99,6 @@ public class PhysicalShop extends JavaPlugin {
 	public static String getName() {
 		return "PhysicalShop";
 	}
-
-	/**
-	 * Returns previously obtained permission set.
-	 * @return the permission handler being used
-	 */
-	public static Permissions getPermissions() {
-		return PhysicalShop.permissions;
-	}
-
 	/**
 	 * Grabs the current StandardConfig being used.
 	 *
@@ -98,14 +107,6 @@ public class PhysicalShop extends JavaPlugin {
 	public static StandardConfig getPluginConfig() {
 		return PhysicalShop.configuration;
 	}
-
-	private static void loadConfig(final ClassLoader classLoader) {
-		configuration = new StandardConfig(classLoader);
-		locale = new LocaleConfig(configuration.getLanguage(), classLoader);
-		new MaterialConfig();
-		logblockChecked = false;
-	}
-
 	/**
 	 * Method used to hook into lockette
 	 * @param relative the block to consider
@@ -141,7 +142,6 @@ public class PhysicalShop extends JavaPlugin {
 	public static void logWarning(final String txt) {
 		logger.log(Level.WARNING, String.format("[%s] %s", getName(), txt));
 	}
-
 	/**
 	 * This function checks for LWC, thus letting player create shop over
 	 * existing chest
@@ -194,13 +194,21 @@ public class PhysicalShop extends JavaPlugin {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Returns previously obtained permission set.
+	 * @return the permission handler being used
+	 */
+	public static Permissions staticGetPermissionHandler() {
+		return PhysicalShop.permissions;
+	}
 	private final PhysicalShopBlockListener blockListener = new PhysicalShopBlockListener();
-
+	private final HashMap<String,CommandHandler> commands = new HashMap<String,CommandHandler>();
 	private final PhysicalShopEntityListener entityListener = new PhysicalShopEntityListener();
-
 	private final PhysicalShopPlayerListener playerListener = new PhysicalShopPlayerListener();
-
+	@Override
+	public Permissions getPermissionHandler() {
+		return PhysicalShop.permissions;
+	}
 	/**
 	 * This will capture the only command, /physicalshop. It will send version information to the sender, and it checks permissions and reloads config if there is proper permission to.
 	 * @param sender Player / Console sending command
@@ -211,14 +219,10 @@ public class PhysicalShop extends JavaPlugin {
 	 */
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
-		sender.sendMessage(String.format("PhysicalShop version %1$s by Wolvereness, original by yli",getDescription().getVersion()));
-		if(sender instanceof Player && !permissions.hasAdmin((Player) sender)) {
-			sendMessage(sender,"CANT_RELOAD_CONFIG");
-			return true;
-		}
-		loadConfig(getClassLoader());
-		sendMessage(sender,"CONFIG_RELOADED");
-		return true;
+		final String subCommand = args.length == 0 ? VERSION_COMMAND : args[0].toUpperCase();
+		if(commands.containsKey(subCommand))
+			return commands.get(subCommand).onCommand(sender, args, staticGetPermissionHandler());
+		return false;
 	}
 
 	/**
@@ -226,10 +230,6 @@ public class PhysicalShop extends JavaPlugin {
 	 */
 	@Override
 	public void onDisable() {
-		/*
-		 * try { configuration.save(); } catch (Throwable t) {
-		 * t.printStackTrace(); }//
-		 */
 	}
 
 	/**
@@ -239,9 +239,9 @@ public class PhysicalShop extends JavaPlugin {
 	public void onEnable() {
 		try
 		{
-			loadConfig(getClassLoader());
-
+			reloadConfig();
 			PhysicalShop.permissions = new Permissions(this);
+			//Events
 			final PluginManager pm = getServer().getPluginManager();
 			pm.registerEvent(Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
 			pm.registerEvent(Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
@@ -249,6 +249,11 @@ public class PhysicalShop extends JavaPlugin {
 			pm.registerEvent(Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this);
 			pm.registerEvent(Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
 			pm.registerEvent(Type.SIGN_CHANGE, blockListener, Priority.Normal, this);
+			//Commands
+			commands.put(RELOAD_COMMAND, new Reload(this));
+			commands.put(VERSION_COMMAND, new Version(this,"%2$s version %1$s by Wolvereness, original by yli"));
+			commands.put(VERBOSE_COMMAND, new Verbose(this));
+			//Hooks
 			Plugin temp = getServer().getPluginManager().getPlugin("LWC");
 			if(temp != null && temp instanceof LWCPlugin) {
 				lwc = (LWCPlugin) temp;
@@ -263,9 +268,19 @@ public class PhysicalShop extends JavaPlugin {
 			throw t;
 		}
 	}
-
 	@Override
 	public void onLoad() {
+	}
+	@Override
+	public void reloadConfig() {
+		super.reloadConfig();
+		configuration = new StandardConfig(this.getClassLoader());
+		locale = new LocaleConfig(configuration.getLanguage(), this.getClassLoader());
+		new MaterialConfig();
+		logblockChecked = false;
+	}
+	public void verbose(final CommandSender sender) {
+		ShopMaterial.verbose(sender);
 	}
 
 }

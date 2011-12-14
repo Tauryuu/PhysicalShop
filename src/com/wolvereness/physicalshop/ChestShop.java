@@ -67,8 +67,10 @@ public class ChestShop extends Shop {
 	@Override
 	public boolean canDestroy(final Player player) {
 		return (player != null)
-				&& (player.getName().equals(getOwnerName()) || PhysicalShop
-						.getPermissions().hasAdmin(player));
+				&& (
+					player.getName().equals(getOwnerName())
+					|| PhysicalShop.staticGetPermissionHandler().hasAdmin(player)
+					);
 	}
 
 	@Override

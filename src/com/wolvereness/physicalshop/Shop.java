@@ -164,7 +164,7 @@ public class Shop {
 	 */
 	public boolean canDestroy(final Player player) {
 		return (player != null)
-				&& PhysicalShop.getPermissions().hasAdmin(player);
+				&& PhysicalShop.staticGetPermissionHandler().hasAdmin(player);
 	}
 
 	/**

@@ -1,36 +1,30 @@
 package com.wolvereness.physicalshop;
 
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 
-import com.nijiko.permissions.PermissionHandler;
+import com.wolvereness.util.PermissionHandler;
 
 /**
  *
  */
-public class Permissions {
+public class Permissions extends PermissionHandler {
 
-	private String canAdmin;
-	private String canBuild;
-	private String canUse;
-	private PermissionHandler permissions = null;
-
+	/**
+	 * Permission node for admin
+	 */
+	public final String CAN_ADMIN = this.getPermission("admin", PermissionDefault.TRUE);
+	/**
+	 * Permission node for build
+	 */
+	public final String CAN_BUILD = this.getPermission("build", PermissionDefault.OP);
+	/**
+	 * Permission node for use
+	 */
+	public final String CAN_USE = this.getPermission("use", PermissionDefault.TRUE);
 	Permissions(final PhysicalShop plugin) {
-		final String pluginName = plugin.getDescription().getName();
+		super(plugin);
 
-		final PluginManager manager = plugin.getServer().getPluginManager();
-		final Plugin test = manager.getPlugin("Permissions");
-		manager.addPermission(new Permission(canBuild = pluginName + ".build",PermissionDefault.TRUE));
-		manager.addPermission(new Permission(canAdmin = pluginName + ".admin",PermissionDefault.OP));
-		manager.addPermission(new Permission(canUse = pluginName + ".use",PermissionDefault.TRUE));
-
-		if (test != null) {
-			permissions = ((com.nijikokun.bukkit.Permissions.Permissions) test)
-					.getHandler();
-		}
 	}
 
 	/**
@@ -39,8 +33,7 @@ public class Permissions {
 	 * @return true if player is a shop admin, default isOp without Permissions(Yeti)
 	 */
 	public boolean hasAdmin(final Player p) {
-		if (permissions != null) return permissions.has(p, canAdmin);
-		return p.hasPermission(canAdmin);
+		return checkPerm(p, CAN_ADMIN);
 	}
 
 	/**
@@ -49,8 +42,7 @@ public class Permissions {
 	 * @return true if player may build shops, default true without Permissions(Yeti)
 	 */
 	public boolean hasBuild(final Player p) {
-		if (permissions != null) return permissions.has(p, canBuild);
-		return p.hasPermission(canBuild);
+		return checkPerm(p, CAN_BUILD);
 	}
 
 	/**
@@ -59,8 +51,7 @@ public class Permissions {
 	 * @return true if player may use shops, default true without Permissions(Yeti)
 	 */
 	public boolean hasUse(final Player p) {
-		if (permissions != null) return permissions.has(p, canUse);
-		return p.hasPermission(canUse);
+		return checkPerm(p, CAN_USE);
 	}
 
 }

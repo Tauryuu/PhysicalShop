@@ -9,7 +9,6 @@ import com.wolvereness.physicalshop.exception.InvalidExchangeException;
  *
  */
 public class InventoryHelpers {
-	// FIXME: Consider enchants
 	private static boolean add(final Inventory inventory, final ItemStack stack) {
 		int left = stack.getAmount();
 		final int maxStackSize = stack.getType().getMaxStackSize();
@@ -29,8 +28,10 @@ public class InventoryHelpers {
 						continue;
 					}
 				} else {
-					if ((s.getType() != stack.getType())
-							|| (s.getDurability() != stack.getDurability())) {
+					if (	(s.getType() != stack.getType())
+							|| (s.getDurability() != stack.getDurability())
+							|| (!s.getEnchantments().isEmpty())
+							) {
 						continue;
 					}
 				}
@@ -87,13 +88,14 @@ public class InventoryHelpers {
 	 * @param material the material to consider
 	 * @return the amount of material in said inventory
 	 */
-	public static int getCount(final Inventory inventory,
-			final ShopMaterial material) {
+	public static int getCount(final Inventory inventory, final ShopMaterial material) {
 		int amount = 0;
 
 		for (final ItemStack i : inventory.getContents()) {
-			if ((i != null) && (i.getType() == material.getMaterial())
-					&& (i.getDurability() == material.getDurability())) {
+			if (	(i != null)
+					&& (i.getType() == material.getMaterial())
+					&& (i.getDurability() == material.getDurability())
+					&& i.getEnchantments().isEmpty()) {
 				amount += i.getAmount();
 			}
 		}
@@ -118,8 +120,7 @@ public class InventoryHelpers {
 		return items;
 	}
 
-	private static boolean remove(final Inventory inventory,
-			final ItemStack stack) {
+	private static boolean remove(final Inventory inventory, final ItemStack stack) {
 		int left = stack.getAmount();
 		final ItemStack[] contents = inventory.getContents();
 
@@ -130,8 +131,10 @@ public class InventoryHelpers {
 
 			final ItemStack s = contents[i];
 
-			if ((s == null) || (s.getType() != stack.getType())
-					|| (s.getDurability() != stack.getDurability())) {
+			if (	(s == null)
+					|| (s.getType() != stack.getType())
+					|| (s.getDurability() != stack.getDurability())
+					|| (!s.getEnchantments().isEmpty())) {
 				continue;
 			}
 
@@ -156,8 +159,7 @@ public class InventoryHelpers {
 	 * @param inventory the inventory to consider
 	 * @param items the items to overwrite the inventory with
 	 */
-	public static void setItems(final Inventory inventory,
-			final ShopItemStack[] items) {
+	public static void setItems(final Inventory inventory, final ShopItemStack[] items) {
 		for (int i = 0; i < items.length; ++i) {
 			final ShopItemStack stack = items[i];
 			inventory.setItem(i, stack == null ? null : stack.getStack());

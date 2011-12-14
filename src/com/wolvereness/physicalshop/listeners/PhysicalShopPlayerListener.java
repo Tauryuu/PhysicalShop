@@ -33,7 +33,7 @@ public class PhysicalShopPlayerListener extends PlayerListener {
 					(shop != null)
 					&& shop.isShopBlock(block)
 					&& !shop.canDestroy(e.getPlayer())
-					&& !PhysicalShop.getPermissions().hasAdmin(e.getPlayer())) {
+					&& !PhysicalShop.staticGetPermissionHandler().hasAdmin(e.getPlayer())) {
 				PhysicalShop.sendMessage(e.getPlayer(), "CANT_USE_CHEST");
 				e.setCancelled(true);
 				return;
@@ -44,7 +44,7 @@ public class PhysicalShopPlayerListener extends PlayerListener {
 
 		if (shop == null) return;
 
-		if (!PhysicalShop.getPermissions().hasUse(e.getPlayer())) {
+		if (!PhysicalShop.staticGetPermissionHandler().hasUse(e.getPlayer())) {
 			PhysicalShop.sendMessage(e.getPlayer(), "CANT_USE");
 			return;
 		}

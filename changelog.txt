@@ -1,3 +1,10 @@
+(12/14/11) - v8.2.4a - 1.0.1 partial update
+- Updated the com.wolvereness.util package for compatibility with BukkitNyan
+- Changed implementation of the reload command, you must now type /physicalshop reload
+- Added version, and verbose commands; verbose will print all names, aliases, and currencies
+- Added the consideration of enchants
+- Now ignores any item that has an enchantment, you may not buy / sell items with them applied
+- Fixed durability, will no longer use byte data, now exclusively checks short durability
 (12/6/11) - v8.2.3 - API, javadoc, and codestyle cleanup Build
 - Added massive amount of code comments... Enjoy...
 - Removed deprecated get currency method

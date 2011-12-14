@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
@@ -20,6 +23,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  *
  */
 public abstract class Config {
+	private static final Logger logger = Logger.getLogger("Minecraft");
 	/**
 	 * Makes file f if it does not exist
 	 *
@@ -42,7 +46,6 @@ public abstract class Config {
 	 * The plugin directory
 	 */
 	public final String directory = "plugins" + File.separator + getName();
-
 	private final File file;
 	/**
 	 * Allows for temporary instances of config. Should NOT be called, use standard constructor with null parameter instead.
@@ -99,10 +102,57 @@ public abstract class Config {
 	 */
 	protected abstract void defaults();
 	/**
+	 * @param section Section to use
+	 * @param node Name of the node
+	 * @return String.valueOf of whatever is at that node
+	 */
+	protected String get(final ConfigurationSection section, final String node) {
+		return String.valueOf(section.get(node));
+	}
+	/**
+	 * @param section Section to use
+	 * @param node Name of the node
+	 * @return A parsed byte from that node
+	 */
+	protected byte getByte(final ConfigurationSection section, final String node) {
+		try {
+			return Byte.parseByte(get(section,node));
+		} catch (final NumberFormatException e) {
+			logWarning(section.getCurrentPath() + "." + node + " \"" + get(section,node) + "\" is not valid");
+			throw e;
+		}
+	}
+	/**
 	 * @return the configuration for this config
 	 */
 	protected final Configuration getConfig() {
 		return configuration;
+	}
+	/**
+	 * @param section Section to use
+	 * @param node Name of the node
+	 * @return A parsed double from that node
+	 */
+	protected double getDouble(final ConfigurationSection section, final String node) {
+		try {
+			return Double.parseDouble(get(section,node));
+		} catch (final NumberFormatException e) {
+			logWarning(section.getCurrentPath() + "." + node + " \"" + get(section,node) + "\" is not valid");
+			throw e;
+		}
+	}
+	/**
+	 * @param section Section to use
+	 * @param node Name of the node
+	 * @return A parsed integer from that node
+	 */
+	protected int getInt(final ConfigurationSection section, final String node) {
+		try {
+			return Integer.parseInt(get(section,node));
+		} catch (final NumberFormatException e) {
+			logWarning(section.getCurrentPath() + "." + node + " \"" + get(section,node) + "\" is not valid");
+			throw e;
+		}
 	}
 	/**
 	 * @param node the node to get keys of
@@ -119,6 +169,47 @@ public abstract class Config {
 	 * @return The name of the plugin.
 	 */
 	public abstract String getName();
+	/**
+	 * @param section
+	 * @param node
+	 * @return
+	 */
+	protected Pattern getPattern(final ConfigurationSection section, final String node) {
+		final Object pattern = section.get(node);
+		try {
+			if(pattern != null)
+				return Pattern.compile(pattern.toString());
+			throw new NullPointerException(section.getCurrentPath() + "." + node + " is null");
+		} catch (final PatternSyntaxException e) {
+			logWarning(section.getCurrentPath() + "." + node + " \"" + pattern + "\" is not valid");
+			throw e;
+		}
+	}
+	/**
+	 * Sends txt to console, log level INFO
+	 *
+	 * @param txt message to log
+	 */
+	public void log(final String txt) {
+		logger.log(Level.INFO, String.format("[%s] %s", getName(), txt));
+	}
+	/**
+	 * Sends txt to console, log level SERVERE
+	 *
+	 * @param txt Message to log
+	 */
+	public void logSevere(final String txt) {
+		logger.log(Level.SEVERE, String.format("[%s] %s", getName(), txt));
+	}
+
+	/**
+	 * Sends txt to console, log level WARNING
+	 *
+	 * @param txt message to log
+	 */
+	public void logWarning(final String txt) {
+		logger.log(Level.WARNING, String.format("[%s] %s", getName(), txt));
+	}
 	/**
 	 * Saves the configuration to the original file.
 	 */

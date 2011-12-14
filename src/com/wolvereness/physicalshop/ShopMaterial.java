@@ -1,6 +1,8 @@
 package com.wolvereness.physicalshop;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,6 +10,8 @@ import org.bukkit.CoalType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
+import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Coal;
 import org.bukkit.material.Dye;
@@ -103,10 +107,10 @@ public class ShopMaterial {
 			return identifiers.get(name);
 		return new ShopMaterial(name);
 	}
-
-	private static byte parseDurability(final String string,final Material material) {
+	@Deprecated
+	private static Short parseDurability(final String string,final Material material) {
 		try {
-			return Byte.parseByte(string);
+			return Short.parseShort(string);
 		} catch (final NumberFormatException e) {
 		}
 
@@ -139,8 +143,8 @@ public class ShopMaterial {
 		} catch (final IllegalArgumentException e) {
 		}
 
-		return data == null ? 0 : data.getData();
-	}
+		return data == null ? 0 : (short) data.getData();
+	}//*/
 
 	/**
 	 * Blanks the current currencies
@@ -191,9 +195,25 @@ public class ShopMaterial {
 
 		return sb.toString();
 	}
-	private final byte durability;
-	private final Material material;
+	/**
+	 * Prints a large amount of output for debugging purposes
+	 * @param sender The person to send the output to
+	 */
+	public static void verbose(final CommandSender sender) {
+		for(final Map.Entry<Character, ShopMaterial> currency : currencies.entrySet()) {
+			sender.sendMessage(currency.getValue().toStringDefault(new StringBuilder().append(currency.getKey()).append(" represents ")).toString());
+		}
+		for(final Entry<String, ShopMaterial> identifier : identifiers.entrySet()) {
+			sender.sendMessage(identifier.getValue().toStringDefault(new StringBuilder().append(identifier.getKey()).append(" can be used for ")).toString());
+		}
+		for(final Entry<ShopMaterial, String> name : names.entrySet()) {
+			sender.sendMessage(name.getKey().toStringDefault(new StringBuilder()).append(" is printed as ").append(name.getValue()).toString());
+		}
+	}
+	private final short durability;
+	private final Map<Enchantment, Integer> enchantment;
 
+	private final Material material;
 	/**
 	 *
 	 * @param c character representing shop currency
@@ -204,6 +224,7 @@ public class ShopMaterial {
 	{
 		final String materialString[] = PhysicalShop.getPluginConfig().getMaterialCode(c).split(":");
 		material = Material.matchMaterial(materialString[0]);
+		enchantment = null;
 		if(material == null)
 		{
 			PhysicalShop.logSevere("Configuration error for currency:"+c);
@@ -211,7 +232,7 @@ public class ShopMaterial {
 		}
 		if(materialString.length > 1)
 		{
-			durability = Byte.parseByte(materialString[1]);
+			durability = Short.parseShort(materialString[1]);
 		} else {
 			durability = 0;
 		}
@@ -221,22 +242,35 @@ public class ShopMaterial {
 	 */
 	public ShopMaterial(final ItemStack itemStack) {
 		material = itemStack.getType();
-		durability = (byte) itemStack.getDurability();
+		durability = itemStack.getDurability();
+		enchantment = itemStack.getEnchantments();
+	}
+	/**
+	 * Deprecated because of enchantment
+	 * @param material bukkit material to reference
+	 * @param durability durability to reference
+	 */
+	@Deprecated
+	public ShopMaterial(final Material material, final byte durability) {
+		this(material, durability, null);
 	}
 	/**
 	 * @param material bukkit material to reference
 	 * @param durability durability to reference
+	 * @param enchantment enchantment to reference
 	 */
-	public ShopMaterial(final Material material, final byte durability) {
+	public ShopMaterial(final Material material, final byte durability, final Map<Enchantment,Integer> enchantment) {
 		this.material = material;
 		this.durability = durability;
+		this.enchantment = enchantment;
 	}
 	private ShopMaterial(final String string) throws InvalidMaterialException {
+		enchantment = null;
 		final String[] strings = string.split(":");
 
 		if (strings.length == 2) {
 			material = Material.matchMaterial(strings[0]);
-			durability = ShopMaterial.parseDurability(strings[1], material);
+			durability = Short.parseShort(strings[1]);
 			return;
 		}
 
@@ -256,6 +290,7 @@ public class ShopMaterial {
 
 		throw new InvalidMaterialException();
 	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -267,6 +302,9 @@ public class ShopMaterial {
 		final ShopMaterial other = (ShopMaterial) obj;
 		if (durability != other.durability) return false;
 		if (material != other.material) return false;
+		if (enchantment == other.enchantment) return true;
+		if (enchantment == null) return false;
+		if (!enchantment.equals(other.enchantment)) return false;
 		return true;
 	}
 
@@ -292,51 +330,42 @@ public class ShopMaterial {
 		return amount != 0 ? new ItemStack(getMaterial(), amount,
 				getDurability()) : null;
 	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
-		return (material.getId() << 8) | durability;
+		return new Integer(material.getId()).hashCode() ^ new Short(durability).hashCode();
 	}
 	@Override
 	public String toString() {
 
 		if(names.containsKey(this)) return names.get(this);
-		final StringBuilder sb = new StringBuilder();
-		final MaterialData data = material.getNewData(durability);
+		return ShopMaterial.toHumanReadableString(toStringDefault(new StringBuilder()).toString());
+	}
 
+	private StringBuilder toStringDefault(final StringBuilder sb) {
 		switch (material) {
 		case COAL:
-			sb.append(((Coal) data).getType().toString());
-			break;
+			sb.append(new Coal(material, (byte) durability).getType().toString());
+			return sb;
 		case LOG:
-			sb.append(((Tree) data).getSpecies().toString() + "_"
-					+ material.toString());
+			sb.append(new Tree(material, (byte) durability).getSpecies().toString()).append('_');
 			break;
 		case LEAVES:
-			sb.append(((Leaves) data).getSpecies().toString() + "_"
-					+ material.toString());
+			sb.append(new Leaves(material, (byte) durability).getSpecies().toString()).append('_');
 			break;
 		case STEP:
 		case DOUBLE_STEP:
-			sb.append(((Step) data).getMaterial().toString() + "_"
-					+ material.toString());
+			sb.append(new Step(material, (byte) durability).getMaterial().toString()).append('_');
 			break;
 		case INK_SACK:
-			sb.append(((Dye) data).getColor().toString() + "_"
-					+ material.toString());
+			sb.append(new Dye(material, (byte) durability).getColor().toString()).append('_');
 			break;
 		case WOOL:
-			sb.append(((Wool) data).getColor().toString() + "_"
-					+ material.toString());
-			break;
-		default:
-			sb.append(material.toString());
+			sb.append(new Wool(material, (byte) durability).getColor().toString()).append('_');
 			break;
 		}
-
-		return ShopMaterial.toHumanReadableString(sb.toString());
+		return sb.append(material.toString());
 	}
 }

@@ -47,7 +47,7 @@ public class PhysicalShopBlockListener extends BlockListener {
 
 		if (!PhysicalShop.getPluginConfig().isProtectChestAccess()) return;
 
-		if (PhysicalShop.getPermissions().hasAdmin(e.getPlayer())) return;
+		if (PhysicalShop.staticGetPermissionHandler().hasAdmin(e.getPlayer())) return;
 
 		if (e.getBlock().getType() != Material.CHEST) return;
 
@@ -87,14 +87,14 @@ public class PhysicalShopBlockListener extends BlockListener {
 			return;
 		}
 
-		if (!PhysicalShop.getPermissions().hasBuild(e.getPlayer())) {
+		if (!PhysicalShop.staticGetPermissionHandler().hasBuild(e.getPlayer())) {
 			PhysicalShop.sendMessage(e.getPlayer(), "CANT_BUILD");
 			e.setCancelled(true);
 			return;
 		}
 
 		if (e.getLine(3).equalsIgnoreCase(PhysicalShop.getPluginConfig().getServerOwner())) {
-			if (!PhysicalShop.getPermissions().hasAdmin(e.getPlayer())) {
+			if (!PhysicalShop.staticGetPermissionHandler().hasAdmin(e.getPlayer())) {
 				PhysicalShop.sendMessage(e.getPlayer(), "CANT_BUILD_SERVER");
 				e.setCancelled(true);
 				return;
@@ -103,7 +103,7 @@ public class PhysicalShopBlockListener extends BlockListener {
 			if (
 					e.getBlock().getRelative(BlockFace.DOWN).getType() == Material.CHEST
 					&& PhysicalShop.getPluginConfig().isExistingChestProtected()
-					&& !PhysicalShop.getPermissions().hasAdmin(e.getPlayer())
+					&& !PhysicalShop.staticGetPermissionHandler().hasAdmin(e.getPlayer())
 					&& !PhysicalShop.lwcCheck(e.getBlock().getRelative(BlockFace.DOWN), e.getPlayer())
 					&& !PhysicalShop.locketteCheck(e.getBlock().getRelative(BlockFace.DOWN), e.getPlayer())) {
 				PhysicalShop.sendMessage(e.getPlayer(), "EXISTING_CHEST");

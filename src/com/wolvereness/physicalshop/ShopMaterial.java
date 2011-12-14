@@ -241,9 +241,7 @@ public class ShopMaterial {
 	 * @param itemStack items to derive this material from
 	 */
 	public ShopMaterial(final ItemStack itemStack) {
-		material = itemStack.getType();
-		durability = itemStack.getDurability();
-		enchantment = itemStack.getEnchantments();
+		this(itemStack.getType(), itemStack.getDurability(), itemStack.getEnchantments());
 	}
 	/**
 	 * Deprecated because of enchantment
@@ -259,10 +257,10 @@ public class ShopMaterial {
 	 * @param durability durability to reference
 	 * @param enchantment enchantment to reference
 	 */
-	public ShopMaterial(final Material material, final byte durability, final Map<Enchantment,Integer> enchantment) {
+	public ShopMaterial(final Material material, final short durability, final Map<Enchantment,Integer> enchantment) {
 		this.material = material;
 		this.durability = durability;
-		this.enchantment = enchantment;
+		this.enchantment = enchantment == null ? null : enchantment.isEmpty() ? null : enchantment;
 	}
 	private ShopMaterial(final String string) throws InvalidMaterialException {
 		enchantment = null;

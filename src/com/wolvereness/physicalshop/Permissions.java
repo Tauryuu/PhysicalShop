@@ -13,11 +13,11 @@ public class Permissions extends PermissionHandler {
 	/**
 	 * Permission node for admin
 	 */
-	public final String CAN_ADMIN = this.getPermission("admin", PermissionDefault.TRUE);
+	public final String CAN_ADMIN = this.getPermission("admin", PermissionDefault.OP);
 	/**
 	 * Permission node for build
 	 */
-	public final String CAN_BUILD = this.getPermission("build", PermissionDefault.OP);
+	public final String CAN_BUILD = this.getPermission("build", PermissionDefault.TRUE);
 	/**
 	 * Permission node for use
 	 */

@@ -1,3 +1,5 @@
+(12/15/11) - v8.2.5a - liscense change
+- GNU GPL
 (12/15/11) - v8.2.4 - bugfix to test build
 - Fixed: Accidentally the permission defaults
 - Fixed: Accidentally all the item comparisons

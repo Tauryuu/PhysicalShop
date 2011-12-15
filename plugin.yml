@@ -1,6 +1,6 @@
 name: PhysicalShop
 main: com.wolvereness.physicalshop.PhysicalShop
-version: 8.2.4
+version: 8.2.5a
 commands:
    physicalshop:
       description: Reloads the configuration

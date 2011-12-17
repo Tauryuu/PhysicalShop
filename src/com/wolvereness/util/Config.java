@@ -170,9 +170,9 @@ public abstract class Config {
 	 */
 	public abstract String getName();
 	/**
-	 * @param section
-	 * @param node
-	 * @return
+	 * @param section Section to retrieve pattern from
+	 * @param node Node to read from
+	 * @return A compiled pattern.
 	 */
 	protected Pattern getPattern(final ConfigurationSection section, final String node) {
 		final Object pattern = section.get(node);

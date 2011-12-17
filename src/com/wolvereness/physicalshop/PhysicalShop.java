@@ -72,9 +72,14 @@ public class PhysicalShop extends JavaPlugin implements Verbosable {
 			if (!logblockChecked) {
 				logblockChecked = true;
 				if (configuration.isLogBlocked()) {
-					consumer = ((LogBlock) Bukkit.getServer().getPluginManager().getPlugin("LogBlock")).getConsumer();
+					final Plugin logblockPlugin = Bukkit.getServer().getPluginManager().getPlugin("LogBlock");
+					if (logblockPlugin == null) {
+						logWarning("Failed to find LogBlock");
+						return null;
+					}
+					consumer = ((LogBlock) logblockPlugin).getConsumer();
 					if (consumer == null) {
-						logWarning("Failed to hook into LogBlock");
+						logWarning("Error getting LogBlock consumerco");
 					} else {
 						log("Sucessfully hooked into LogBlock");
 					}

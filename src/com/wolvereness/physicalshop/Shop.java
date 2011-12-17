@@ -1,9 +1,11 @@
 package com.wolvereness.physicalshop;
 
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.craftbukkit.CraftChunk;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -252,12 +254,25 @@ public class Shop {
 	 */
 	public void interact(final Player player) {
 		final ShopMaterial item = new ShopMaterial(player.getItemInHand());
-
+		try {
 		if (item.equals(getBuyCurrency())) {
-			buy(player);
+			if(buy(player)) {
+				triggerRedstone();
+			}
 		} else if (item.equals(material)) {
-			sell(player);
+			if(sell(player)) {
+				triggerRedstone();
+			}
 		}
+		//*
+		} catch (final RuntimeException t) {
+			t.printStackTrace();
+			throw t;
+		} catch (final Error t) {
+			t.printStackTrace();
+			throw t;
+		}
+		//*/
 	}
 	/**
 	 * An alias for {@link #canDestroy(Player)}, now deprecated because of its ambiguity
@@ -281,7 +296,6 @@ public class Shop {
 
 		return block.equals(signBlock.getRelative(signData.getAttachedFace()));
 	}
-
 	private void queryLogBlock(final Player player, final boolean selling) {
 		if (PhysicalShop.getLogBlock() == null)
 			return;
@@ -391,6 +405,7 @@ public class Shop {
 		queryLogBlock(player, true);
 		return true;
 	}
+
 	/**
 	 * Messages player p the rates for current Shop.
 	 * @param p the player to message
@@ -405,6 +420,44 @@ public class Shop {
 			PhysicalShop.sendMessage(p, "SELL_RATE", sellRate.getAmount(),
 					material, sellRate.getPrice(), getSellCurrency());
 		}
+	}
+	private void triggerRedstone() {
+		if(!PhysicalShop.getPluginConfig().isRedstoneTriggered()) return;
+		final BlockFace face = ShopHelpers.getBack(sign);
+		if(
+			face != BlockFace.NORTH
+			&& face != BlockFace.SOUTH
+			&& face != BlockFace.WEST
+			&& face != BlockFace.EAST
+			) return;
+		final Block signBlock = sign.getBlock().getRelative(face);
+		final Block activatedBlock = signBlock.getRelative(face);
+		final Material type = activatedBlock.getType();
+		if(
+			type == Material.LEVER
+			|| type == Material.STONE_BUTTON) {
+			if(ShopHelpers.getFace(activatedBlock.getData()) == face.getOppositeFace()) {
+				if(activatedBlock.getChunk() instanceof CraftChunk) {
+					final CraftChunk chunk = (CraftChunk) activatedBlock.getChunk();
+					net.minecraft.server.Block
+						.byId[chunk.getHandle().world.getTypeId(
+							activatedBlock.getX(),
+							activatedBlock.getY(),
+							activatedBlock.getZ()
+							)
+						].b(
+							chunk.getHandle().world,
+							activatedBlock.getX(),
+							activatedBlock.getY(),
+							activatedBlock.getZ(),
+							null
+							);
+					// This is Notch code for toggling something.
+					// This means I wont need to toggle the button back myself!
+				}
+			}
+		}
+
 	}
 
 }

@@ -1,4 +1,8 @@
-(12/15/11) - v8.2.5a - liscense change
+(12/16/11) - v8.3.0 - redstone triggering
+- Added redstone trigger
+- Added redstone trigger config option, default false
+- Fixed exception with logblock when not installed but config had it enabled
+(12/15/11) - v8.2.5a - license change
 - GNU GPL
 (12/15/11) - v8.2.4 - bugfix to test build
 - Fixed: Accidentally the permission defaults

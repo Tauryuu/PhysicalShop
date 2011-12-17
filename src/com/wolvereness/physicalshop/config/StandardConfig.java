@@ -186,11 +186,19 @@ public class StandardConfig extends Config {
 	}
 
 	/**
-	 * Checks config to get the 'protect-explode'setting.
+	 * Checks config to get the 'protect-explode' setting.
 	 *
 	 * @return the config option for protecting chests from explosions
 	 */
 	public boolean isProtectExplode() {
 		return getConfig().getBoolean("protect-explode", true);
+	}
+
+	/**
+	 * Checks config to get the 'trigger-redstone' setting.
+	 * @return true if redstone should trigger
+	 */
+	public boolean isRedstoneTriggered() {
+		return getConfig().getBoolean("trigger-redstone", false);
 	}
 }

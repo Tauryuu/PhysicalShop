@@ -1,0 +1,25 @@
+NOT_ENOUGH_PLAYER_ITEMS: Du har ikke nok %1$s
+SELL: Du solgte %1$d %2$s for %3$d %4$s
+SELL_RATE: Du kan sælge %1$d %2$s for %3$d %4$s
+CANT_PLACE_CHEST: Du må ikke lægge denne kiste
+DEPOSIT: Du deponeret %1$d %2$s og %3$d %4$s
+WITHDRAW: Du tager %1$d %2$s og %3$d %4$s
+STATUS: Butikken indeholder %1$d %2$s, %3$d %4$s, og %5$d %6$s
+CANT_USE_CHEST: Du må ikke bruge denne butiks kiste
+CANT_BUILD: Du må ikke bygge butikker
+NO_SELL: Du kan ikke sælge til denne butik
+NOT_ENOUGH_PLAYER_MONEY: Du har ikke nok %1$s
+CANT_BUILD_SERVER: Du må ikke bygge server butikker
+EXISTING_CHEST: Du kan ikke bygge en butik over en eksisterende kiste
+NOT_ENOUGH_SHOP_MONEY: Butikken har ikke nok %1$s
+BUY: Du købte %1$d %2$s for %3$d %4$s
+CANT_DESTROY: Du må ikke ødelægge denne butik
+NOT_ENOUGH_SHOP_ITEMS: Butikken har ikke nok %1$s
+NO_BUY: Du kan ikke købe fra denne butik
+PLAYER_INVENTORY_FULL: Din beholdningstaske er fuld
+STATUS_ONE_CURRENCY: Butikken indeholder %1$d %2$s og %3$d %4$s
+CHEST_INVENTORY_FULL: Butikken er fuld
+CANT_USE: Du må ikke bruge butikkerne
+BUY_RATE: Du kan købe %1$d %2$s for %3$d %4$s
+CANT_RELOAD_CONFIG: Du må ikke genindlæse konfigureringen
+CONFIG_RELOADED: Konfigureringen er blevet genindlæst

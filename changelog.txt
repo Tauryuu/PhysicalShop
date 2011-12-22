@@ -1,3 +1,5 @@
+(12/21/11) - v8.3.1a - translation build
+- Added Danish Locale, special thanks to 
 (12/16/11) - v8.3.0 - redstone triggering
 - Added redstone trigger
 - Added redstone trigger config option, default false

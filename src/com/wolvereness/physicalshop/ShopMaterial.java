@@ -243,15 +243,15 @@ public class ShopMaterial {
 	public ShopMaterial(final ItemStack itemStack) {
 		this(itemStack.getType(), itemStack.getDurability(), itemStack.getEnchantments());
 	}
-	/**
+	/*
 	 * Deprecated because of enchantment
 	 * @param material bukkit material to reference
 	 * @param durability durability to reference
-	 */
+	 *
 	@Deprecated
 	public ShopMaterial(final Material material, final byte durability) {
 		this(material, durability, null);
-	}
+	}//*/
 	/**
 	 * @param material bukkit material to reference
 	 * @param durability durability to reference
@@ -325,8 +325,11 @@ public class ShopMaterial {
 	 * @return an item stack representing this material
 	 */
 	public ItemStack getStack(final int amount) {
-		return amount != 0 ? new ItemStack(getMaterial(), amount,
-				getDurability()) : null;
+		if(amount == 0) return null;
+		final ItemStack stack = new ItemStack(getMaterial(), amount,getDurability());
+		if(enchantment == null) return stack;
+		stack.addUnsafeEnchantments(enchantment);
+		return stack;
 	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

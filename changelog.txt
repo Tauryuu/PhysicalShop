@@ -1,5 +1,7 @@
+(12/21/11) - v8.3.1 - URGENT bugfix
+- Fixed: Enchantments being removed during transactions
 (12/21/11) - v8.3.1a - translation build
-- Added Danish Locale, special thanks to 
+- Added Danish Locale, special thanks to Duerdum9
 (12/16/11) - v8.3.0 - redstone triggering
 - Added redstone trigger
 - Added redstone trigger config option, default false

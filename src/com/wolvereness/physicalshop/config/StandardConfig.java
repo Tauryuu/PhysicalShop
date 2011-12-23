@@ -5,12 +5,11 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
 import com.wolvereness.physicalshop.ShopMaterial;
 import com.wolvereness.physicalshop.exception.InvalidSignException;
 import com.wolvereness.util.Config;
-
-import de.diddiz.LogBlock.LogBlock;
 
 //"Buy (?=\\d{1,4})|(?<=\\d{1,4}) for (?=\\d{1,4})|(?<= for \\d{1,4})(?=\\D)"
 //Inferior
@@ -155,12 +154,10 @@ public class StandardConfig extends Config {
 	 */
 	public boolean isLogBlocked() {
 		try {
-			return
-				getConfig().getBoolean("log-block", false)
-			// && Bukkit.getServer().getPluginManager().getPlugin("LogBlock") != null
-				&& ((LogBlock) Bukkit.getServer().getPluginManager().getPlugin("LogBlock")).getConfig().logChestAccess;
-		} catch (final NullPointerException e) {
-			return false; // not loaded or none-existent
+			if(!getConfig().getBoolean("log-block", false)) return false;
+			final Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("LogBlock");
+			if(plugin == null) return false;
+			return ((de.diddiz.LogBlock.LogBlock) plugin).getLBConfig().isLogging(de.diddiz.LogBlock.Logging.CHESTACCESS);
 		} catch (final ClassCastException e) {
 			e.printStackTrace();
 			return false; // sanity check

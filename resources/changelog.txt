@@ -1,3 +1,5 @@
+(12/23/11) - v8.3.3 - bugfix build
+- Fixed: Alias and names acted strangely
 (12/23/11) - v8.3.2r2 - re export with Locale
 (12/23/11) - v8.3.2 - new logblock hook
 - Fixed: newest version of LogBlock

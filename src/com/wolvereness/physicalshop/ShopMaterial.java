@@ -55,7 +55,7 @@ public class ShopMaterial {
 	 * @param item name of the item to reference
 	 */
 	public static void addShopMaterialAlias(String alias, final String item) {
-		alias = junkCharacters.matcher(spaces.matcher(alias).replaceAll("_").replace('|',':')).replaceAll("").toUpperCase();
+		alias = junkCharacters.matcher(spaces.matcher(alias).replaceAll("_")).replaceAll("").toUpperCase();
 		try {
 			identifiers.put(alias,getShopMaterial(item, false));
 		} catch (final InvalidMaterialException e) {

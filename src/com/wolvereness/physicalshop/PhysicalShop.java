@@ -278,11 +278,11 @@ public class PhysicalShop extends JavaPlugin implements Verbosable {
 	}
 	@Override
 	public void reloadConfig() {
-		super.reloadConfig();
 		configuration = new StandardConfig(this.getClassLoader());
 		locale = new LocaleConfig(configuration.getLanguage(), this.getClassLoader());
 		new MaterialConfig();
 		logblockChecked = false;
+		super.reloadConfig();
 	}
 	public void verbose(final CommandSender sender) {
 		ShopMaterial.verbose(sender);

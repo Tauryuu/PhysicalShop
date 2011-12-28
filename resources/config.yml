@@ -10,3 +10,4 @@ sell-pattern: Sell (?=\d{1,4} for)|(?<=\d{1,4}) for (?=\d{1,4})|(?<= for \d{1,4}
 language: English
 protect-existing-chest: true
 trigger-redstone: false
+extended-names: false

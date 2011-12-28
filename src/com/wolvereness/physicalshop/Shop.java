@@ -31,7 +31,7 @@ public class Shop {
 		}
 	}
 	/**
-	 * Owner is found on fourth line of sign. Making player names longer than 16 characters is on my to-do list.
+	 * Owner is found on fourth line of sign. This will NOT cross-check for extended player names!
 	 * @param lines The set of lines associated with the sign for a shop.
 	 * @return name of the owner of said shop
 	 */

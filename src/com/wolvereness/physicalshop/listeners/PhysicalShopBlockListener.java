@@ -14,6 +14,8 @@ import com.wolvereness.physicalshop.Shop;
 import com.wolvereness.physicalshop.ShopHelpers;
 import com.wolvereness.physicalshop.exception.InvalidSignException;
 import com.wolvereness.physicalshop.exception.InvalidSignOwnerException;
+import com.wolvereness.util.NameCollection;
+import com.wolvereness.util.NameCollection.OutOfEntriesException;
 
 /**
  *
@@ -79,7 +81,7 @@ public class PhysicalShopBlockListener extends BlockListener {
 	public void onSignChange(final SignChangeEvent e) {
 		if (e.isCancelled()) return;
 
-		final String playerName = ShopHelpers.truncateName(e.getPlayer().getName());
+		//final String playerName = ShopHelpers.truncateName(e.getPlayer().getName());
 		try {
 			new Shop(e.getLines());
 		} catch (final InvalidSignOwnerException ex) {
@@ -111,7 +113,17 @@ public class PhysicalShopBlockListener extends BlockListener {
 				return;
 			}
 			if (PhysicalShop.getPluginConfig().isAutoFillName()) {
-				e.setLine(3, playerName);
+				if(PhysicalShop.getPluginConfig().isExtendedNames()) {
+					try {
+						e.setLine(3, NameCollection.getSignName(e.getPlayer().getName()));
+					} catch (final OutOfEntriesException ex) {
+						PhysicalShop.logSevere("Player " + e.getPlayer() + " cannot register extended name!");
+						e.getPlayer().sendMessage("Name overflow, notify server administrator!");
+						e.setCancelled(true);
+					}
+				} else {
+					e.setLine(3, ShopHelpers.truncateName(e.getPlayer().getName()));
+				}
 			}
 		}
 	}

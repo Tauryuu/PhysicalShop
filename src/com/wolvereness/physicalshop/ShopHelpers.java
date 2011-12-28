@@ -174,6 +174,6 @@ public class ShopHelpers {
 	public static String truncateName(final String name) {
 		if(name == null) return null;
 		if(name.length()<=15) return name;
-		return name.substring(0, 14);
+		return name.substring(0, 15);
 	}
 }

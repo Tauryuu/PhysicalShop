@@ -29,6 +29,7 @@ import com.wolvereness.util.CommandHandler.Reload;
 import com.wolvereness.util.CommandHandler.Verbose;
 import com.wolvereness.util.CommandHandler.Verbose.Verbosable;
 import com.wolvereness.util.CommandHandler.Version;
+import com.wolvereness.util.NameCollection;
 
 import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
@@ -235,6 +236,9 @@ public class PhysicalShop extends JavaPlugin implements Verbosable {
 	 */
 	@Override
 	public void onDisable() {
+		if(configuration.isExtendedNames()) {
+			NameCollection.unregisterPlugin(this);
+		}
 	}
 
 	/**
@@ -278,7 +282,13 @@ public class PhysicalShop extends JavaPlugin implements Verbosable {
 	}
 	@Override
 	public void reloadConfig() {
+		if(configuration != null && configuration.isExtendedNames()) {
+			NameCollection.unregisterPlugin(this);
+		}
 		configuration = new StandardConfig(this.getClassLoader());
+		if(configuration.isExtendedNames()) {
+			NameCollection.registerPlugin(this);
+		}
 		locale = new LocaleConfig(configuration.getLanguage(), this.getClassLoader());
 		new MaterialConfig();
 		logblockChecked = false;

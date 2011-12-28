@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import com.wolvereness.physicalshop.exception.InvalidExchangeException;
 import com.wolvereness.physicalshop.exception.InvalidSignException;
+import com.wolvereness.util.NameCollection;
 
 /**
  *
@@ -68,8 +69,14 @@ public class ChestShop extends Shop {
 	public boolean canDestroy(final Player player) {
 		return (player != null)
 				&& (
-					player.getName().equals(getOwnerName())
-					|| PhysicalShop.staticGetPermissionHandler().hasAdmin(player)
+					PhysicalShop.staticGetPermissionHandler().hasAdmin(player)
+					|| (
+						PhysicalShop.getPluginConfig().isExtendedNames()
+						?
+							NameCollection.matches(getOwnerName(), player.getName())
+						:
+							player.getName().equals(getOwnerName())
+						)
 					);
 	}
 

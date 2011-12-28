@@ -147,6 +147,14 @@ public class StandardConfig extends Config {
 	}
 
 	/**
+	 * Checks config to see if extended names are enabled (only matters if auto-fill is on)
+	 * @return true if service is enabled
+	 */
+	public boolean isExtendedNames() {
+		return isAutoFillName() && getConfig().getBoolean("extended-names", false);
+	}
+
+	/**
 	 * Checks config to see if LogBlock is enabled, with positive checks
 	 * LogBlock's status
 	 *
